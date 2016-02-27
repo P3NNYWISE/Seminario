@@ -1,0 +1,268 @@
+{% extends "base_reportes.html" %}
+{% block title%} Reportes {% endblock %}
+
+
+{% block content %}
+
+
+
+
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+<script type="text/javascript">
+
+    	var nombre_boton_select = ".selectItem"; // Clase
+    	 $(document).ready(function() {
+    	 	/*  boton select en modal*/
+       	 	$(nombre_boton_select).on('click',function(e){
+         	   e.preventDefault();
+            
+           		/*$("#myModal").hide();
+           		 
+           		/*$(".body").removeClass('modal-open');*/
+           		$(".modal.in").hide();
+           		$('.modal-backdrop').remove();  
+           		
+           		
+            	var Pid = $(this).attr('id');
+            	var os_nombre = $(this).attr('data');
+
+  
+             	$("#os_query").val(os_nombre);
+       			return false;
+       	 	
+       	 	});
+       	 	
+       	 	
+       	$.datepicker.setDefaults($.datepicker.regional["es"])
+		$( "#desde" ).datepicker({
+			dateFormat: "yy-mm-dd",
+			changeYear : true,
+		  	yearRange : "1960:2015",
+	
+		  	numberOfMonths: 1,
+		  	//firstDay: 1,  	
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],	
+		  			  			 
+		  	showOn: "button",
+			buttonImage: "/media/images/calendar.gif",
+			buttonImageOnly: true,
+			onClose: function(selectedDate){
+				$('#hasta').datepicker("option","minDate",selectedDate);
+			} 
+			
+							  
+		  }  );
+		
+		$( "#hasta" ).datepicker({
+			dateFormat: "yy-mm-dd",
+			changeYear : true,
+		  	yearRange : "1960:2015",
+	
+		  	numberOfMonths: 1,
+		  	//firstDay: 1,  	
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],	
+		  			  			 
+		  	showOn: "button",
+			buttonImage: "/media/images/calendar.gif",
+			buttonImageOnly: true,
+			onClose: function(selectedDate){
+				$('#desde').datepicker("option","maxDate",selectedDate);
+			} 
+			
+					  
+		  });  
+		  
+		  
+		  
+		  
+
+    	 	
+    	 	
+    	 });
+    	 
+    	 
+    	 
+    	 
+</script>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'MES');
+        data.addColumn('number', 'Usuarios Nuevos');
+        /*
+        data.addRows([
+          ['Mushrooms', 3],
+          ['Onions', 10],
+          ['Olives', 10],
+          ['Zucchini', 21],
+          ['Pepperoni', 8]
+        ]);*/
+        {%for u in data_grafico %}
+        
+        	data.addRow(["{{u.0}}",parseInt("{{u.1}}")]);
+        {%endfor%}
+        // Set chart options
+        var options = {'title':'Usuarios registrados Durante el Ultimo Año',
+        				'tooltip':{trigger:'selection'},
+        				'pointShape':'circle',
+        				'pointSize':10,
+						       
+                       'width':800,
+                       'height':500};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+
+
+
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span8">	
+<h2> Reportes :</h2>
+
+
+
+</div>
+<div class="span4 pull-right">
+<!--
+<form  class ="well form-search " action="." method="get"   >
+	
+	
+		 <div class="input-append">		
+		<input id="desde" type="text" class="input-large search-query" placeholder="Desde" name="fecha_ini"/>
+		</div>		
+		 <br>			
+		 <div class="input-append">	
+		<input id="hasta" type="text" class="input-large search-query" placeholder="hasta" name="fecha_fin"/>
+		</div>				
+		{% csrf_token %} <br />
+		<button type="submit" class="btn "> <i class="icon-search"></i> Buscar </button>
+	
+</form>
+-->
+</div>
+</div>
+
+
+<hr>
+
+
+{% if usuarios %}
+<div class="form-style">
+	
+<h3> Usuarios Registrados Durante el Ultimo Año</h3>
+<!--
+	<h4> Obra Social : {{os_reporte}}  -   Cuit    :  {{os_reporte.cuit}}</h4> -->
+	<h4> Periodo : {{ fecha_ini|date:" d  M Y"}}   -    {{fecha_fin|date:" d  M Y"}}</h4>
+
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				
+				<th> Mes</th>
+				<th> Usuarios  </th>
+				
+		
+
+			</tr>
+		</thead>																																																																													
+    	
+    	<tbody>
+    		{%for u in usuarios %}
+    		<tr>
+    			<td> {{u.0}} </td>
+    			
+    			<td> {{ u.1}} </td>
+    			
+    																									
+    		</tr>
+    		{%endfor%}
+    	</tbody>
+	   
+	    
+    </table>
+    
+    </div>
+    
+    
+        <!--Div that will hold the pie chart-->
+    <div id="chart_div" class="form-style"> </div>
+
+      <!-- Form Hidden para pasar datos y generar PDF   
+        <form  action="{%url vista_PDF_rank_practicas_X_OS %}" method="get"   >
+	
+		<input  type="hidden"  value = "{{os_reporte.cuit}}" name="os_" />
+		<input  type="hidden"  value="{{fecha_ini}}" name="fecha_ini_"/>				
+		<input  type="hidden"  value="{{fecha_fin}}" name="fecha_fin_"/>
+				
+		{% csrf_token %} <br />
+		<button type="submit" class="btn btn-primary pull-right"> <i class="icon-print icon-white"></i> Imprimir </button>
+	
+		</form>
+    -->
+    
+            <a href="." class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar</a>
+    
+    
+{% else %}
+	
+
+    <h2> Seleccione...</h2>
+    <hr>
+    {%if ranking_vacio %}
+    	<div class="alert alert-error">
+    		La busqueda no arrojo resultados
+    	</div>
+    {%endif%}
+
+    <a href="." class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar</a>
+{% endif%}
+<br /> 
+
+
+
+
+{% endblock %}
+
+
+{% block sidebar1 %}
+
+					<li ><a href="/reportes/os/consultas/0"> <i class="icon-chevron-right"></i> Consultas Por O.Social </a></li>
+<li ><a href="/reportes/os/practicas/0"><i class="icon-chevron-right"></i> Prescripciones Por O.Social </a></li>
+<li ><a href="{% url vista_reportes_rank_practicas_OS %}"> <i class="icon-chevron-right"></i>Ranking Practicas </a></li>
+ <li ><a href="{% url vista_reportes_rank_diagnosticos %}"> <i class="icon-chevron-right"></i> Ranking Diagnosticos </a></li>
+<li class="active"><a href="{% url vista_reportes_usuarios %}">  <i class="icon-chevron-right"></i>Usuarios Registrados </a></li>
+
+					
+{% endblock %}

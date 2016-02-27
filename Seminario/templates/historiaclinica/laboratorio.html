@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title%} Laboratorio {% endblock %}
+
+{% block content %}
+{% if laboratorio %}
+<p><h2>Analisis Clinicos  :<small>   fecha : {{ laboratorio.fecha }}</small></h2></p> 
+<hr />
+
+
+	<table class="table table-hover  table-striped">
+		<theader>
+			<tr>
+				<th> Descripcion  </th>
+				<th> </th>
+			</tr>
+		</theader>																																																																													
+    	
+    	<tbody>
+    		<tr >								
+    			<td> Prestador</td>																	
+    			<td>{{ laboratorio.prestador }}</td>
+    		</tr>
+    		<tr>								
+    			<td> Codigo </td>																	
+    			<td>{{ laboratorio.analisis.codigo }}</td>
+    		</tr>
+    		<tr>								
+    			<td> Descripcion </td>																	
+    			<td>{{ laboratorio.analisis.descripcion }}</td>
+    		</tr>
+    		<tr>
+    			<td> Resultados</td>
+    			<td>{{ laboratorio.resultados }}</td>
+    		</tr>
+    				
+    	</tbody>
+    	
+    	
+	   
+	    
+    </table>
+        			<!-- Botonies con iconos-->    				    		
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			<div class="pull-right">
+    		    	<a class="btn btn-mini btn-info" href="{%url vista_laboratorio_editar laboratorio.id%}" title="Editar"><li class="icon-pencil"></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger" data-toggle="modal" title="Eliminar"> <li class="icon-trash icon-white"></li></a>
+    		    	{%if medico%}
+    		    	<a class="btn btn-mini btn-success" href="{% url vista_laboratorio_agregar  expediente%}" title="Agregar" > <i class="icon-plus"></i>  </a> 		
+        			{%endif%}		
+    		    </div>			
+    		
+    			{% endif%} 
+    			<a href="{%url vista_laboratorio laboratorio.historia_clinica.id%} " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+    			
+				
+    
+    
+{% else %}
+    <h2> No se han cargado las Consultas...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+
+<br /> 
+
+
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea eliminar  <b> {{laboratorio.analisis}} </b> </p>
+	</div>
+	<div class="modal-footer">
+		<form action="{% url vista_laboratorio_delete laboratorio.id %}" method="POST">
+		{% csrf_token %}
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Eliminar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal -->
+
+{% endblock %}
+{% block sidebar1 %}
+
+
+		<li><a href="{%url vista_pacientes 1%}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce laboratorio.historia_clinica.paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion laboratorio.historia_clinica.paciente.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+	
+		
+		<li><a href="{%url vista_consultas laboratorio.historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		
+		
+		<li class="active"><a href="{%url vista_laboratorio laboratorio.historia_clinica.id%}"><i class="icon-chevron-right"></i> Laboratorio</a></li>	
+		<li  ><a href="{%url vista_practicas laboratorio.historia_clinica.id%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+				<li  ><a href="{%url vista_recetas laboratorio.historia_clinica.id%}"><i class="icon-chevron-right"></i> Recetas</a></li>	
+		
+
+					
+{% endblock %}
+
+
+{% block informacion %}
+
+					<h5>{{ laboratorio.historia_clinica.paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ laboratorio.historia_clinica.id }} </h5>
+					<a href="/perfil/{{ laboratorio.historia_clinica.paciente.id}}"><img  src="/media/{{ laboratorio.historia_clinica.paciente.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+{% endblock %}
+

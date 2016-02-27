@@ -1,0 +1,86 @@
+{% extends "base-nosidebar.html" %}
+{% block title %} Perfil de Paciente{% endblock %}
+{% block content %}
+
+	
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+	
+
+<!-- Contexto paciente historia_clinica  -->
+
+
+				
+<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
+    <ul class="nav nav-tabs">
+    	
+    <li class="active"><a href="#tab1" data-toggle="tab">Perfil </a></li>
+    <li><a href="#tab2" data-toggle="tab">Historia Clinica</a></li>
+    <li><a href="#tab3" data-toggle="tab"> Antecedentes Personales</a></li>
+    <li><a href="#tab4" data-toggle="tab">Examen Fisico</a></li>
+    <li><a href="#tab5" data-toggle="tab">Consultas</a></li>
+    </ul>
+
+ 
+    
+    <div class="tab-content">
+    	<!-- TAB 1 Perfil -->
+    <div class="tab-pane active" id="tab1">
+    {% block seccion1 %}
+
+    {% endblock %}
+    <!-- Tab 2 Historia Clinica -->
+    <div class="tab-pane" id="tab2">
+    	{% block seccion2 %}
+    	<!-- 
+    	{% if historia_clinica %}
+    	
+    	<div class="span7">
+		<h2>  Informacion Basica</h2>	<br />
+		<label><b> Fecha Creacion  :</b>     {{ historia_clinica.fecha_creacion }}  </label><br />
+		<label> <b>Prestador :  </b>  {{ historia_clinica.prestador}}  </label><br />
+		<label> <b>Lugar de Nacimiento  :  </b>   {{ historia_clinica.lugar_nacimiento}}</label><br />
+		<label> <b>Estado Civil  :  </b>   {{ historia_clinica.estado_civil}}</label><br />
+		<label> <b>Ocupacion  :  </b>   {{ historia_clinica.ocupacion}}</label><br />
+		<label> <b>Religion  :  </b>   {{ historia_clinica.religion}}</label><br />
+		<label> <b>Padre  :  </b>   {{ historia_clinica.padre}}</label><br />
+		<label> <b>Madre  :  </b>   {{ historia_clinica.madre}}</label><br />
+		<label> <b>Grupo Sanguineo  :  </b>   {{ historia_clinica.grupo_sanguineo}}</label><br />
+		<label> <b>Motivo de Consulta  :  </b>   {{ historia_clinica.motivo_consulta}}</label><br />
+		<label> <b>Antecedentes Enfermedad Actual  :  </b>   {{ historia_clinica.antecedentes_efermedad_actual}}</label><br />
+		<br>
+		{{informacion }}
+		
+		<br />
+		<a href="# " class="btn btn-primary"> Editar</a>
+			<a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+    	</div>	
+    {% else %}
+    	<p>Falta hce.</p>
+    {%endif%}
+    
+    
+    
+    </div>-->
+    {% endblock %}
+    <div class="tab-pane" id="tab3">
+ 		{% block seccion3 %}   	
+    	    
+    	 {% endblock %}
+    	</div>
+    <div class="tab-pane" id="tab4">
+    	{% block seecion4 %}
+    	    
+    	 {% endblock %}
+    	</div>
+    <div class="tab-pane" id="tab5">
+    	{% block seecion5 %}
+    	    
+    	 {% endblock %}
+    	</div>
+    	
+    </div>
+    </div>
+<!--
+
+{% endblock %}

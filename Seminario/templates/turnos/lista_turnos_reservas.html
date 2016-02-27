@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title%} Consultar Turnos {% endblock %}
+
+{% block content %}
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span6">	
+<h2>Consultar Turnos :   </h2>
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+</div>
+<div class="span6">
+
+</div>
+</div>
+{% if reservas %}
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				<th> Nro </th>
+				<th> Fecha </th>
+				<th> Hora</th>
+				<th> Prestador</th>
+				
+				<th> 
+					
+					
+					
+     </th>
+				<!-- <th> Direccion </th>
+				<th> Telefono </th> --> 
+			</tr>
+		</thead>																																																																													
+    	{%for turno in reservas %}
+    	<tbody>
+    		<tr>
+    					<td> {{ turno.id }}</td>																					
+    			<td>  {{ turno.dia_atencion.fecha }} </td>
+    					<td> {{ turno.hora_turno }}</td>
+    					<td> {{ turno.dia_atencion.prestador }}</td>
+    			
+    			{%if user.is_authenticated%}   
+    						    			    			
+    			<td>
+    		    	<a class="btn btn-mini btn-primary" href="{%url vista_pdf_turno_comprobante turno.id %}" title="Imprimir Comprobante" ><li class="icon-file icon-white"></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ turno.id }}" data-name="Dia : {{turno.dia_atencion.fecha }}  Hrs : {{turno.hora_turno}}" title="Cancelar Reserva"> <li class="icon-trash icon-white"></li></a>    		      			
+    			</td>    		
+    			{% endif%} 
+    		
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+    
+    
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+{% else %}
+    <h2> No se han Reservado Turnos...</h2>
+    
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+{% endif%}
+<br /> 
+
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Anular el turno :   <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/turno/cancelar/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Anular" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+{% block sidebar1 %}
+
+
+
+	<li ><a href="/turnos/listado_especialidades/page/1"><i class="icon-chevron-right"></i> Solicitar Turnos</a></li>
+	
+	<li class="active"><a href="{% url vista_turnos_reservas %} "><i class="icon-chevron-right"></i> Consultar Turnos</a></li>
+	
+					
+					
+{% endblock %}
+{% block informacion %}
+<img src="/media/images/iconos/turnos.png" width="180px" class="img-rounded"/>
+{% endblock %}

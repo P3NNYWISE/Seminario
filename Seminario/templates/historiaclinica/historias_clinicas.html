@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title%} Historias Clinicas{% endblock %}
+
+{% block content %}
+	{%block js%}
+	<script src="/media/js/jquery.filtertable.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+     	$('table').filterTable({
+     		label: "Filtro   :  ",
+     		placeholder:"Buscar ...",
+     		filterSelector:'#input-filter',
+     	}
+     	); // apply filterTable to all tables on this page
+    });
+</script>
+
+<style>
+		.filter-table .quick { margin-left: 0.5em; font-size: 0.8em; text-decoration: none; }
+		.fitler-table .quick:hover { text-decoration: underline; }
+		td.alt { background-color: #ffc; background-color: rgba(255, 255, 0, 0.2); }
+		
+		
+		
+	</style> <!-- or put the styling in your stylesheet -->
+
+
+	
+	
+	{%endblock%}
+
+
+
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span6">	
+<h2> Historia Clinica :   </h2>
+
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+</div>
+<div class="span6">
+<!--
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+-->
+	<form class="well form-search pull-right " action="." method="get" >	
+		<div class="input-append ">	
+			<input type="text" class="input-large  search-query" placeholder="Buscar" name="query" id="input-filter"/>
+			{% csrf_token %}
+			<button type="submit" class="btn"> <i class="icon-search"></i></button>
+		</div>
+	</form>
+
+
+
+
+
+</div>
+</div>
+{% if historias_clinicas %}
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				
+				<th> Expediente </th>
+				<th> Paciente </th>
+				<th> Prestador </th>
+				<th> Fecha </th>
+				<th></th>
+				<!--
+				<th> 
+					
+					<a class="btn btn-mini" href="{% url vista_os_agregar  %}" title="Agregar" > <i class="icon-plus"></i> </a>
+					
+    </th>-->
+				<!-- <th> Direccion </th>
+				<th> Telefono </th> --> 
+			</tr>
+		</thead>																																																																													
+    	
+    	<tbody>
+    		{%for hce in historias_clinicas %}
+    		<tr>
+    																										
+    			<td> {{ hce.id }} </td>
+    					<td> <a href="{% url vista_perfil hce.paciente.id %}">{{ hce.paciente.get_full_name }}</td></a>
+    					<td> <a href="{% url vista_medicos_detalle hce.prestador.medico.matricula %}">{{ hce.prestador }}</td></a>
+    					<td> {{ hce.fecha_creacion }}</td>
+    					<td><a class="btn btn-mini btn-primary" href="{% url vista_hce hce.paciente.id %}"  title="Ver expediente"><li class="icon-eye-open icon-white"></li></a></td>
+    			
+    			{%if user.is_authenticated and user.is_staff %}   
+    		<!--				    			    			
+    			<td>
+    		    	<a class="btn btn-mini" href="{% url vista_os_update os.cuit %}" title="Editar" ><li class="icon-pencil"></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ os.cuit }}" data-name="{{os.nombre}}" title="Eliminar"> <li class="icon-trash icon-white"></li></a>    		      			
+    			</td>
+    			-->    		
+    			{% endif%} 
+    		
+    		</tr>
+    		{%endfor%}
+    	</tbody>
+	   
+	    
+    </table>
+    
+    
+{% else %}
+    <h2> No se han cargado Historias Clinicas..</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+<br /> 
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="{% url vista_obrasociales  %}"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea eliminar  <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/os/delete/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Eliminar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+
+
+{% block sidebar1 %}
+
+				<li> <a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li class="active"><a href="{%url vista_hce_listado%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>	
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/Hce.png" width="180px" class="img-rounded"/>
+{% endblock %}
+

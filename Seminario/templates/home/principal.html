@@ -1,0 +1,180 @@
+
+	{% extends "base-nosidebar.html" %}
+
+
+{% block title%} Inicio - Bienvenidos {% endblock %}
+		
+
+
+{% block content %} 
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+    $('.carousel').carousel({
+    	interval: 2000
+    	})
+	});
+</script>
+<style>
+    /* MARKETING CONTENT
+    -------------------------------------------------- */
+
+    /* Center align the text within the three columns below the carousel */
+    .marketing .span4 {
+      text-align: center;
+    }
+    .marketing h2 {
+      font-weight: normal;
+    }
+    .marketing .span4 p {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+
+    /* CUSTOMIZE THE CAROUSEL
+    -------------------------------------------------- */
+
+    /* Carousel base class */
+    .carousel {
+      margin-bottom: 20px;
+    }
+
+    .carousel .container {
+      position: relative;
+      z-index: 9;
+      
+    }
+
+    .carousel-control {
+      height: 80px;
+      margin-top: 0;
+      font-size: 120px;
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+      background-color: transparent;
+      border: 0;
+      z-index: 10;
+    }
+
+    .carousel .item {
+      height: 400px;
+    }
+    .carousel img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      height: 500px;
+    }
+
+    .carousel-caption {
+      background-color: transparent;
+      position: static;
+      max-width: 550px;
+      padding: 10 0px;
+      margin-top: 200px;
+    
+    }
+    .carousel-caption h1,
+    .carousel-caption .lead {
+      margin: 0;
+      line-height: 1.25;
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+    }
+    .carousel-caption .btn {
+      margin-top: 10px;
+    }
+
+
+</style>
+
+
+<div class='span10 offset1' align="center">
+
+   <div class="titulo" align="center">
+      <h1>  Sistema Online de Gestion Medica
+      </h1>
+      <hr>
+      </div>
+
+	
+
+{% endblock%}
+{%block extra%}
+<!-- Portada -->
+
+
+    <div id="myCarousel" class="carousel slide  ">
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+      <div class="active item"><img src="/media/images/medica.jpg" />
+
+        
+        
+      
+      </div>
+    <div class="item"><img src="/media/images/wall-med1.png"/>
+  
+      
+      
+      
+    </div> <!-- Item -->
+    
+    
+    
+    <div class="item"><img src="/media/images/dna.jpg"  /></div>
+    
+    <div class="item"><img src="/media/images/neuronal.jpg" /></div>
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+  <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+        <div class="span4">
+          <img class="img-circle" src="/media/images/iconos/Doctor.png">
+          <h2> Gestion de Profesionales y Pacientes</h2>
+          <p>Gestion del Personal Medico, datos personales,especialidades, agenda y horarios, dias de antecion. Gestion de Cuentas de Usuario, Pacientes, Perfiles 
+          	</p>
+          
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <img class="img-circle" src="/media/images/iconos/turnos.png">
+          <h2>Turnos Online</h2>
+          <p>Gestion de turnos de prestadores de diferentes especialidades,el Paciente lo  realiza completamente online,facilitando la tare de asignacion,anulacion, y coordinacion con la Agenda
+   		</p>
+        
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <img class="img-circle" src="/media/images/iconos/Hce.png">
+          <h2>Historia Clinicas Electronica</h2>
+          <p>Gestion y Centralizacion de datos pertenecientes a la historia clinica de cada paciente de forma electronica, Gestion de Consultas, Practicas y Medicamentos
+          	</p>
+          
+        </div><!-- /.span4 -->
+      </div>
+      {% endblock%}

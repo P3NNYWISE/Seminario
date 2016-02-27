@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title%} Consulta de Turnos {% endblock %}
+
+{% block content %}
+
+<!-- Contexto Prestador Informacion -->
+
+<meta charset="utf-8" />
+
+		
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+		<script src="/media/js/jquery.ui.datepicker-es.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		$.datepicker.setDefaults($.datepicker.regional["es"]);
+		$( "#datepicker" ).datepicker({
+			dateFormat: " DD yy-mm-dd",
+		  	numberOfMonths: 1,
+		  	firstDay: 1,  	
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],		  
+			showOn: "button",			
+			buttonImage: "/media/images/calendar.gif",
+			buttonImageOnly: true,
+
+			
+		  }  
+		);
+		var i = 0;
+		var diasActivos=[]
+		"{%for d in  dia_atencion%}"
+			diasActivos[i] = "{{ d.fecha.year}}"+"-"+"{{ d.fecha.month}}"+"-"+"{{ d.fecha.day}}";
+			//alert(diasActivos[i]);
+			i++;
+		"{%endfor%}"
+		
+		
+		$( "#TurnosDatepicker" ).datepicker({
+			
+			dateFormat: "DD yy-mm-dd",
+		  	numberOfMonths: 2,
+		  	firstDay: 0,
+		  	minDate: new Date,
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],		  
+			beforeShowDay : function(date){
+				var dia =  date.getDate();
+				var mes = date.getMonth()+1;
+				var anio= date.getFullYear();
+				var fecha= anio+"-"+mes+"-"+dia;
+				
+				
+				if ( $.inArray(fecha,diasActivos) != -1){ return [true , ""]}
+				else { return [false ,""]}
+				
+				
+			},
+			
+			
+			onSelect : function(date){
+				$('#datepicker').val(date);
+				$('#consultaForm').submit();
+				
+			},
+		  }  
+		  
+		);
+		
+		
+		
+	});
+</script>
+
+<ul class="breadcrumb">
+
+
+	<li class="active">Turnos    </li>
+
+	
+</ul>
+<h2> Consulta de Turnos  : </h2>
+<h3>Prestador :  <small> {{ prestador.medico}} - {{prestador.especialidad}} </small></h3>
+
+
+
+<!-- dateFormat: "DD, d MM, yy", changeMonth : true, -->
+<div class="row-fluid">
+<div class="span8">	
+		<!-- No se ve -->
+<form id="consultaForm" class="well form-search" action="." method="POST" enctype="multipart/form-data" style="display: none">
+	
+	<div class="input-prepend">	
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>			
+		<input type="text" class="input-medium  search-query" placeholder="Fecha" name="fecha"  id="datepicker"/>
+		
+		
+		{% csrf_token %}
+		
+	</div>
+</form>
+
+
+</div>
+<div class="span4">
+
+
+</div>
+</div>
+{% if info %}
+<div class="alert alert-error">
+	{{informacion}}
+</div>
+{%endif%}
+
+
+<h4>Seleccione un dia de atencion activo: </h4>
+<br />
+<div align="center" id ="TurnosDatepicker" width="100px" height="150px" ></div>
+
+
+	
+		
+		
+	
+<br />
+<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+	
+					
+
+{% endblock %}
+
+
+{% block sidebar1 %}
+	<li ><a href="{%url vista_medicos_principal %}"><i class="icon-chevron-right"></i> Profesionales</a></li>
+	<li class="active"><a href="#">-<i class="icon-chevron-right"></i> Consultar Turnos</a></li>
+		{%if user.is_authenticated and user.is_staff %}
+		<li><a href="{%url vista_especialidades %}"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	
+	{%else%}
+		<li ><a href="/turnos/listado_especialidades/page/1"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	{%endif%}
+	
+	
+
+
+	
+					
+					
+{% endblock %}
+
+
+{% block informacion %}
+					<a href="/perfil/ {{prestador.medico.user.id}}"><img src="/media/{{ prestador.medico.user.get_profile.photo}}" width="250px" class="img-polaroid"/></a>
+					
+					<h4>{{ prestador.medico.user.get_full_name }}</h4>
+					<h5> Matricula : <small>{{ prestador.medico.matricula }}</small></h5>
+					<h5><small> {{ prestador.especialidad}}</small></h5>
+					
+					
+					
+{% endblock %}

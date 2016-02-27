@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block title%} Registrar Prescripcion Practica Medica {% endblock %}
+
+{% block content%}
+
+
+
+
+
+
+    
+    <script src="/media/js/jquery.formset.js"></script>
+    
+    <!-- <script src="/media/js/modalselect.js"></script> -->
+    
+    <script type="text/javascript">
+    
+    	var nombre_boton_select = ".selectItem"; // Clase
+    
+        $(function() {
+        	/*Crear Inline*/
+            $(".inline.{{ detalle_form.prefix }}").formset({
+                prefix: "{{ detalle_form.prefix }}",
+                addText: "Agregar",
+                deleteText: "Eliminar",
+                added: function(row){
+                	/*Agrego input text con nombre producto_text_ contador*/
+                	var aux= $("#id_"+"{{detalle_form.prefix}}"+"-TOTAL_FORMS").val();
+                	var cont = parseInt(aux)-1;
+                		$(row).find(".producto_class").attr("name","producto_text_"+cont);
+                	
+                	$(row).find(".producto_class").attr("name","producto_text_"+cont);
+                	$(row).find(".buscar").attr("data","-"+cont+"-");
+                	
+                	
+                	
+                	
+                },
+                
+            })
+            
+        });
+         $(document).ready(function() {
+       		$('table').filterTable({
+       			autofocus: true,
+     			filterSelector:'#input-filter',
+     			
+     	        }
+     		); // apply filterTable to all tables on this page
+         		
+         	//Text Area mas grande
+         	$("textarea").addClass('input-block-level');
+       	
+     
+       	 	/*Boton Buscar en cada fila*/
+       	 	$(".buscar").live('click', function(e){
+       	 		    e.preventDefault();
+       	 		    var data = $(this).attr('data');
+       	 		    
+            	            
+        			$(nombre_boton_select).attr('data',data);
+                              
+            	
+       	 	}); 
+       	 	/*  boton select en modal*/
+       	 	$(nombre_boton_select).on('click',function(e){
+         	   e.preventDefault();
+            
+           		/*$("#myModal").hide();
+           		 
+           		/*$(".body").removeClass('modal-open');*/
+           		$(".modal.in").hide();
+           		$('.modal-backdrop').remove();  
+           		
+           		
+            	var Pid = $(this).attr('id');
+            	var nro_fila = $(this).attr('data');
+            	
+       
+      		
+             	$("#id_" + "{{detalle_form.prefix}}"+nro_fila+ "practica").val(Pid);
+       			return false;
+       	 	
+       	 	});
+       	 	
+    });
+        
+    </script>
+    
+    <style>
+		.filter-table .quick { margin-left: 0.5em; font-size: 0.8em; text-decoration: none; }
+		.fitler-table .quick:hover { text-decoration: underline; }
+		td.alt { background-color: #ffc; background-color: rgba(255, 255, 0, 0.2); }
+		    .wide-modal {
+      width:750px;
+      margin-left: -375px;
+      } 
+		
+		
+	</style> <!-- or put the styling in your stylesheet -->
+    
+    
+   {{ formset.media }} 
+    
+
+
+
+    <div>
+
+        
+        <form  class="form " action="." method="post">
+        	        <h2>Registrar Prescripcion Practica Medica</h2>
+        	        <hr />
+        <h4>Expediente Nro: {{ expediente }}  - {{ historia_clinica.paciente.get_full_name }}</h4>
+		<h4>Fecha : {% now "SHORT_DATE_FORMAT"%}    -    Hora : {% now 'f' %}  </h4>
+            {% csrf_token %}
+           <table class="table table-hover table-bordered">
+				<tbody>
+				{%if prestador %} 
+				<tr>
+				<td>
+				<label> <h4>   Prestador : </h4></label>
+				</td>
+				<td>
+				<select name="prestador" class="pull-right">
+					{% for instance in prestador%}
+					<option value="{{instance.id}}"> {{instance}}</option>
+					{%endfor%}
+				</select>
+				</td>
+				</tr>			
+				{%endif%}			
+				{%if os_prescripcion %}
+				<tr>
+				<td>
+				
+				<label> <h4>   Obra Social : </h4></label>
+				</td>
+				<td>
+				<select name="os_prescripcion" class="pull-right" >
+					{% for instance in os_prescripcion%}
+					<option value="{{instance.id}}"> {{instance}}</option>
+					{%endfor%}
+				</select>
+				</td>
+				</tr>			
+				{%endif%}	
+				
+				
+			
+			<!--{{form.as_table}} -->
+			</tbody>					
+			</table>
+            
+           
+            
+                
+            
+            <fieldset class="form-inline">
+                <legend>Detalle Practica</legend>
+                {{ detalle_form.management_form }}
+                {{ detalle_form.non_form_errors }}
+                {% for form in detalle_form %}
+                    {{ form.id }}
+                    
+                    
+
+                    <div class="inline {{ detalle_form.prefix }} span12" >
+                    	
+						{{ form.practica.errors }}
+                        {{ form.practica.label_tag }}
+                        {{ form.practica }}
+                        <a href="#myModal" role="button" class="btn btn-mini btn-primary buscar" data-toggle="modal" title="buscar" data="-0-"> <li class="icon-search icon-white"></li></a>
+                        
+                        
+                      <!--
+                    	<input type="text"  class="producto_class"  placeholder="  {{ form.producto.value }}" name="producto_text_0"/>
+                    	-->
+                        {{ form.indicaciones.errors }}
+                        {{ form.indicaciones.label_tag }}
+                        {{ form.indicaciones}}
+                        
+                        
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <table class="table table-hover ">
+            <tbody>
+            {{ form.as_table}}
+            </tbody>					
+			</table>
+       
+            <input type="submit" value="Registrar Prescripcion" class="btn " />
+        </form>
+    </div>
+    <a href="{%url vista_practicas expediente%} " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+    
+  <!-- Modal -->
+<div id="myModal" class="modal hide fade wide-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> INOS </h3>
+	</div>
+				
+	<div class="modal-body">
+			
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query" id="input-filter"/>
+			
+		
+		
+		<table class="table table-condensed table-hover table-bordered">
+		<thead>
+			<tr>
+				<th> Capitulo   </th>				
+				<th> Codigo</th>
+				<th> Descripcion</th>
+				<th> </th>
+											
+				 
+			</tr>
+		<thead>		
+		<tbody>
+			 {% for practica in inos %}
+    		<tr>
+    			
+    			<td> {{practica.capitulo}}</td>
+    			<td> {{ practica.codigo}}</td>
+    			<td> {{ practica.descripcion}}</td>
+    			<td> 
+    			<input class="btn btn-mini btn-primary selectItem" type="submit" value="Select"  id="{{practica.id}}" data="{{practica.capitulo}}"+"."+"{{practica.codigo}}"> 
+    			</td>
+    		<tr>	
+		  {%endfor%}
+		</tbody>
+		</table>
+	</div>	
+
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		
+
+
+	</div>
+</div>
+<!-- Fin Modal -->
+
+{% endblock %}
+{% block sidebar1 %}
+		<li><a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce paciente_id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion paciente_id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+		<li ><a href="{%url vista_consultas expediente%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>			
+		
+		
+		<li class="active" ><a href="{%url vista_practicas expediente%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+				<li  ><a href="{%url vista_recetas expediente %}"><i class="icon-chevron-right"></i> Recetas</a></li>	
+		
+{% endblock %}
+
+
+
+{% block informacion %}
+					<h5>{{ historia_clinica.paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ expediente }} </h5>
+					<a href="/perfil/{{ paciente_id}}"><img src="/media/{{ historia_clinica.paciente.get_profile.photo}}" width="250px"/></a>
+{% endblock %}
+
+
+
+
+

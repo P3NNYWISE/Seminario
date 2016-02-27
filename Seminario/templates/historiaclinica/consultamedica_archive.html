@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title%} Lista Consultas{% endblock %}
+
+{% block content %}
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span6">	
+<h2> Consultas :   </h2>
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+{% if latest %}
+<ul>
+	{%for date in date_list%}
+	<li> {{date|date}}</li>
+	{%endfor%}
+</ul>
+<div>
+	<h1>Consultas {{year|date:'Y'}}	</h1>
+	{%for consulta in latest%}
+	<p>
+		{{consulta.fecha|date}}--- {{consulta.prestador}}
+	</p>
+	
+	{%endfor%}
+</div>
+
+
+{% else %}
+    <h2> No se han cargado Consultas..</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+<br /> 
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="{% url vista_obrasociales  %}"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea eliminar  <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/os/delete/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Eliminar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+

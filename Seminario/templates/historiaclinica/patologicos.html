@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title%} Histora Clinica {% endblock %}
+
+{% block content %}
+
+
+
+<meta charset="utf-8" />
+		
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+		<script src="/media/js/jquery.ui.datepicker-es.js"></script>
+
+
+
+
+<script type="text/javascript">
+	$(function(){
+		$.datepicker.setDefaults($.datepicker.regional["es"]);
+		$( "#datepicker" ).datepicker({
+			dateFormat: " D yy-mm-dd",
+		  	numberOfMonths: 2,
+		  	firstDay: 1,
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],		  
+
+		  }  
+		);
+		
+	});
+</script>
+<!--
+<script>
+$(function (){
+$.datepicker.setDefaults($.datepicker.regional["es"]);
+$("#datepicker").datepicker({
+	firstDay: 1,
+	dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+	dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+		onSelect: function (date) {		
+			alert(date)
+			},
+});
+});
+</script>
+-->
+<!-- dateFormat: "DD, d MM, yy", changeMonth : true, -->
+
+
+<!-- contexto form informacion-->
+{% if informacion == 'guardado' %}
+<div class="alert alert-success">
+	Se Guardo Satisfactoriamente
+</div>
+{%endif%}
+
+
+
+		
+		<form action="." method="POST" enctype="multipart/form-data">
+			<h2> Antecedentes Patologicos   <small>Paciente :    {{ historia_clinica.paciente.get_full_name }} </small></h2>
+ 			
+			{% csrf_token %}
+			<table class="table table-hover">
+			{{form.as_table}}
+			</table>
+			<input class="btn" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>
+				
+			
+		</form>
+		<br>
+		
+		<br />
+		{% if informacion == 'guardado' %}
+		<a href="{%url vista_hce historia_clinica.paciente.id%}" class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>	
+			
+		{%else%}
+			<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+		{%endif%}
+		
+		
+		
+	
+		
+{% endblock %}
+
+
+
+
+{% block sidebar1 %}
+		<li><a href="{%url vista_pacientes 1%}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li class="active"><a href="{%url vista_hce historia_clinica.paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+	
+{% endblock %}
+
+
+
+{% block informacion %}
+					<h5>{{ historia_clinica.paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ historia_clinica.id }} </h5>
+					<a href="/perfil/{{ historia_clinica.paciente_id}}"><img src="/media/{{ historia_clinica.paciente.get_profile.photo}}" width="250px"/></a>
+{% endblock %}

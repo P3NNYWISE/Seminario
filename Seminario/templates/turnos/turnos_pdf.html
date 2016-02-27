@@ -1,0 +1,60 @@
+{% extends "base_pdf.html" %}
+{% block title%} Lista Turnos{% endblock %}
+
+{% block content %}
+
+<!-- Contexto especialidades -->
+<h3> Profesional : {{ dia_atencion.prestador }}  </h3>
+<h2> Listado de Turnos del dia:     {{ dia_atencion.fecha }}  </h2>
+<h4> Fecha  :  {{ fecha }}  </h4>
+<br />
+
+
+{% if turnos %}
+		<table border="0.2" width="100%">
+			<header>
+				<tr>
+					 <th> Paciente </th>
+					<!-- <th> fecha </th>-->
+					<th> Hora </th>
+						<th> DNI </th>
+
+					
+					<th> Observacion </th>
+			
+				</tr>
+			</header>
+	    	{%for t in turnos %}
+	    	<body>
+	    		<tr>
+	    		{%if t.paciente %}
+	    					
+	    			<td> {{ t.paciente.get_full_name }}</td>
+	    			<td>{{ t.hora_turno}}</td>
+	    			<td>{{ t.paciente.get_profile.dni}}</td>
+	
+	       	    			
+	    			<td>{{ t.observacion}}</td>
+	    	
+	    			
+	    		{%else%}
+	    	
+	    			<td> Disponible</td>	
+	    			<td>{{ t.hora_turno}}</td>
+	    			<td> </td>	    	
+
+	    			<td>{{ t.observacion}}</td>
+	  
+	  	  		  
+	    		{% endif %}  			    		    		
+
+	    		</tr>
+	    	</body>		    
+		    {%endfor%}
+	    </table>
+	{% else %}
+	    <h3> Haga su Consulta...</h3>
+	{% endif%}
+	<br />
+	
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} Registro {% endblock %}
+{% block content %}
+
+
+
+<form action="." method="POST">
+	<h2>Agregar Nuevo Usuario </h2>
+	<table class="table table-hover table-bordered">
+	{% csrf_token %}
+	{{ form.as_table}}
+	</table>
+	<!-- <button class="btn btn-primary"> Registrar </button>-->
+	<p><input class="btn btn-primary" type="submit"  value="Registrar Usuario"/></p>	
+	
+</form>
+<p>{{ informacion}}</p>
+{% endblock %}
+
+
+{% block informacion %}
+	<img src="/media/images/anonimo.jpg" width="180px" class="img-rounded"/>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base-nosidebar.html" %}
+{% block title %} Acerca de .... {% endblock %}
+{% block content %}
+
+    <style type="text/css">
+      
+
+      .about {
+        max-width: 600px;
+        padding: 20px 29px 29px; 
+        margin: 20px 50px 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+   <div class="titulo" align="center">
+      <h1>  Sistema Online de Gestion Medica
+      </h1>
+      <hr>
+      </div>
+
+
+
+<div class="about offset2">
+ <h2 class="form-signin-heading"> Acerca de este Proyecto   <img class="img-rounded pull-right" src="/media/images/logo6.jpg" width="55px" height="30px" /></h2>
+        <hr/>
+
+
+<div class="span9 ">
+  <h2>Seminario de Computacion </h2
+  <br>
+  <br>
+  </div>
+<div class="span3">
+	<img src="/media/images/escudounsa.gif" width="100px" height="150px"/>	
+</div>
+
+
+
+<br>
+<br>
+
+
+
+
+<h3> Universidad Nacional De Salta</h3>
+	
+
+<h3>{{ msg }} </H3> 
+Desarrollado en Python 2.7, MySQL 5.4 , Django Version: {{version}}
+
+
+<br>
+<br><br>
+<br>
+
+</div>
+
+
+
+{% endblock %}
+
+
+          {% block informacion %}
+  <img src="/media/images/iconos/icono-info.jpg" width="180px" class="img-rounded"/>
+
+
+
+
+{% endblock %}

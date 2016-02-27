@@ -1,0 +1,254 @@
+<!DOCTYPE html >
+<html>
+	<head>
+		<meta charset='"UTF-8"' />
+		<title> {% block title %} Bienvenidos {% endblock %}</title>
+		
+		<link rel="stylesheet" href="/media/bootstrap/css/bootstrap.css">		
+		<script src="/media/js/jquery.js"></script> 
+		<script src="/media/js/jquery.form.min.js"></script>		
+		<script src="/media/js/demo.js"></script>
+		<script src="/media/bootstrap/js/bootstrap.js"></script>
+		<script src="/media/js/jquery.filtertable.min.js"></script>
+		
+		<style type="text/css"> 
+			body{
+				padding-top: 70px;
+				padding-bottom: 10px;
+				background: url('/media/images/background2.png') no-repeat;
+		
+				}
+				.sidebar-nav{
+					padding: 3px 0px;
+				}
+						/* styles for layout */
+				html
+				{
+				    height:100%;
+				}
+				 
+				#wrap
+				{
+				  min-height: 100%; 
+				}
+				 
+				#main
+				{
+				    overflow:auto;
+				    padding-bottom:150px; /* this needs to be bigger than footer height*/
+				}
+				.errorlist{
+						color : red  ;
+						position: relative;
+						
+						
+				}
+				
+				 
+				.footer
+				{
+				    position: relative;
+				    margin-top: -150px; /* negative value of footer height  	    color:#fff;*/
+				    height: 150px;
+				    clear:both;
+				    padding-top:20px;
+				    color:#000;
+			
+				} 
+				
+				
+		</style> 
+
+
+	<link rel="stylesheet" href="/media/bootstrap/css/bootstrap-responsive.css"> 
+		
+	{%block js%}
+	{%endblock%}
+	
+	
+	
+	</head>
+	
+	
+<body>
+	
+
+	
+	
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<!-- boton con rayitas para responsive-->    	
+			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>	
+			
+		
+        <div class="container-fluid">
+
+			<a class="brand" href="{% url vista_principal %}">  <img class="img-rounded" src="/media/images/logo6.jpg" width="40px" height="30px" />   SiSteMa </a>
+
+          <div class="nav-collapse collapse">
+			<ul class="nav ">
+				{% if user.is_authenticated %}					
+							{% if user.is_staff %}
+								<li class="dropdown">
+								<a class="dropdown-toggle " data-toggle="dropdown" href="#"> {{user.groups.all.id }}Administracion <b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<!-- links -->
+									<li><a href="/listado-pacientes/page/1"> Pacientes </a></li>
+									<li><a href="{%url vista_hce_listado %}"> Historias Clinicas </a></li>
+									<li><a href="{% url vista_medicos %}"> Profesionales </a></li> 
+									
+							
+							
+									<li><a href="{% url vista_obrasociales %}"> Generales </a></li>
+								
+									  
+								
+								</ul>
+								</li>
+				
+							{%endif%}
+				
+							{%for grupo in user.groups.all%}					
+									{% if  grupo.name == "Medicos"%}
+										<li class="dropdown">
+										<a class="dropdown-toggle " data-toggle="dropdown" href="#">Profesionales <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<!-- links -->
+											<li><a href="{% url vista_medicos_principal %}"> Mi Cuenta </a></li> 
+											<li><a href="#"> Turnos </a></li> 
+											<li><a href="/listado-pacientes/page/1"> Pacientes </a></li>
+											<li><a href="{%url vista_hce_listado %}"> Historias Clinicas </a></li> 
+										
+										</ul>
+										</li>
+									
+					
+									{%endif%}
+						
+							{%endfor%}		
+								<li class="dropdown">
+										<a class="dropdown-toggle " data-toggle="dropdown" href="#">Pacientes <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<!-- links -->
+											
+											<li ><a href=" /turnos/listado_especialidades/page/1"> Turnos </a></li> 
+											
+										
+										</ul>
+										</li>
+							<li class="dropdown">
+										<a class="dropdown-toggle " data-toggle="dropdown" href="#">Reportes <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<!-- links -->
+											
+											<li ><a href="/reportes/os/consultas/0"> Consultas Por O.Social </a></li> 
+											<li ><a href="/reportes/os/practicas/0"> Prescripciones Por O.Social </a></li>
+											<li ><a href="{% url vista_reportes_rank_practicas_OS %}"> Ranking Practicas </a></li>
+											
+										
+										</ul>
+										</li>
+			
+				
+				
+					
+			
+			
+				{% endif %}
+				
+				
+				<li ><a href="{% url vista_contacto %}"> Contacto </a></li>
+				<li><a href="{% url vista_about %}"> Acerca de.. </a></li>
+		
+				
+			</ul>
+			<!-- Segunda Barra a la derecha-->
+				<ul class="nav pull-right">
+					{% if user.is_authenticated %}
+					<li class="dropdown">
+						<a class="dropdown-toggle " data-toggle="dropdown" href="#">	<img src="/media/{{ user.get_profile.photo }}"  class="img-rounded" width="35px" />  Usuario {{user.username}} <b class="caret"> </b> </a>
+					<ul class="dropdown-menu">
+						<!-- links -->
+						<li><a href="{% url vista_editar_perfil %}"><i class="icon-cog"></i>  Perfil </a></li> 
+						<li><a href="{% url vista_logout %}"> <i class="icon-off"></i>  Cerrar Session</a></li> 
+					
+					</ul>											
+				</li>
+				{% else %}
+					<li><a href="{% url vista_login %}"> <i class="icon-user"></i>Login </a></li>
+				{% endif %}																																																																																																																																																																																																																	
+				</ul>
+				</div>
+			</div>
+		</div>
+	</div> <!-- navbar -->
+	
+	<div class="container-fluid">
+		<div class="row-fluid">
+							
+			<div class="span3 ">
+			<div class="well well-small bs-docs-sidebar">
+				<ul class="nav nav-list bs-docs-sidenav">
+					<li class="nav-header"> Menu </li>
+					{% block sidebar1 %}
+					{% endblock %}
+					
+          			
+					  
+				</ul>
+			</div> <!-- Well--> 
+			<div class="well well-small sidebar-nav">
+				<ul class="nav nav-list bs-docs-sidebar">
+					<li class="nav-header"> Calendario </li>
+					
+						{% block calendar %}
+					{% endblock %}
+					 
+					
+          			
+					  
+				</ul>
+			</div>
+		</div> <!--span2-->
+	
+			
+			<div class="span9">
+				<div class="hero-unit">
+					{% block content %}
+					{% endblock %}			
+				</div>
+			</div>
+		
+
+
+		
+	
+		</div> <!--row -->
+</div><!--container-->	
+
+
+<footer class="footer"  >
+		<hr style='clear:both;'>  
+	       <div align="center">
+			
+			<img src="/media/images/python-logo.gif" width="160px" height="100px" />	
+			<img src="/media/images/django.gif" width="110px" height="100px" />
+			    <p>  &copy; Catedra Seminario de Computacion 2013 - Fabio G Rodriguez</p>
+			    
+			</div>
+</footer>
+		
+
+	
+</body>
+</html>
+
+

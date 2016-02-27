@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title%} Practicas Medicas {% endblock %}
+{{ form.media}}
+{% block content%}
+<!-- contexto form informaicon-->
+<script type="text/javascript">
+     $(document).ready(function() {
+     	$("textarea").addClass('input-block-level');
+     });
+</script>
+
+
+
+		<form action="." method="POST" enctype="multipart/form-data">
+				<h2>Registrar Realizacion de Practicas Medicas</h2>
+			{% csrf_token %}
+			
+			<table class="table table-hover table-bordered">
+				<tbody>
+				{%if efector %}
+				<tr>
+				<td>
+				<label> Efector : </label>
+				</td>
+				<td>
+				<select name="efector" >
+					{% for instance in efector%}
+					<option value="{{instance.id}}"> {{instance}}</option>
+					{%endfor%}
+				</select>
+				</td>
+				</tr>			
+				{%endif%}			
+		
+			
+			{{form.as_table}}
+			</tbody>					
+			</table>
+			
+					
+			
+			<input class="btn" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>
+											
+		</form>
+		<br>
+		
+		<br />
+	
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+		
+		
+
+		
+{% endblock %}
+
+{% block sidebar1 %}
+		<li><a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce paciente_id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion paciente_id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+		<li ><a href="{%url vista_consultas expediente%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>			
+		
+		<li ><a href="{%url vista_laboratorio historia_clinica.id%}"><i class="icon-chevron-right"></i> Laboratorio</a></li>	
+		<li class="active" ><a href="{%url vista_practicas expediente%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+		
+{% endblock %}
+
+
+{% block informacion %}
+					<h5>{{ historia_clinica.paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ expediente }} </h5>
+					<a href="/perfil/{{ paciente_id}}"><img src="/media/{{ historia_clinica.paciente.get_profile.photo}}" width="250px"/></a>
+{% endblock %}

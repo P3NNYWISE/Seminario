@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title%} Listado de Profesionales {% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+
+
+	<li><a href="/turnos/listado_especialidades/page/1">Especialidades </a>  <span class="divider">/</span> </li>
+	<li class="active"> {{especialidad.nombre}}</a></li>
+	
+</ul>
+
+
+<h2> Solicitar Turnos :   </h2>
+
+<div class="row-fluid">
+<div class="span6">	
+<h3> Listado de Profesionales :   </h3>
+
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="POST">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+
+
+
+
+
+
+{% if medicos %}
+	<table class="table table-hover table-bordered table-striped">
+		<thead>
+			<tr>
+				<th> Matricula </th>
+				<th> Nombre </th>
+				<th></th>
+		
+			</tr>
+		</thead>
+    	{%for m in medicos %}
+    	<tbody>
+    		<tr>
+    			<td> {{ m.medico.matricula }}</td>
+    			<td>{{ m.medico.user.get_full_name }}</td>
+    			
+    			<!-- Botones con iconos-->
+    			{%if user.is_authenticated  %}
+    			<td><a class="btn btn-mini btn-primary" href="{%url vista_agenda m.id %}" title="Agenda"><li class="icon-book icon-white"></li> </a> 
+    		<!--	<td><a class="btn" href="#"><li class="icon-shopping-cart"></li> Comprar </a> </td>
+    		-->
+    			
+    				<a class="btn btn-mini btn-primary" href="/turnos/solicitud/{{ m.id }}" title="Dias de Atencion"><li class="icon-calendar icon-white"></li>  </a> 
+    			</td>
+    			{% endif%}
+    	
+    		</tr>
+    	</tbody>
+	    
+	    {%endfor%}
+    </table>
+    
+    
+{% else %}
+    <h2> No hay Profesionales disponibles de esa Especialidad ...</h2>
+{% endif%}
+<br /> 
+{% if medicos %}
+	<div class="pagination">
+		<ul>
+	<li><a href="/turnos/listado/{{ m.especialidad }}/page/1 "> << </a></li>
+	{% if especialidades.has_previous %}
+		<li><a href="/turnos/listado/{{ m.especialidad }}/page/{{ medicos.previous_page_number }}"> Prev </a></li>
+	{% else %}
+		<li><a href="#"> Prev </a></li>
+	{% endif %}
+	{% if especialidades.has_next %}
+		<li><a href="/turnos/listado/{{ m.especialidad }}/page/{{ medicos.next_page_number }}"> Next </a></li>
+	{% else %}
+		<li><a href="#"> Next </a></li>
+	{% endif %}
+	<li><a href="/turnos/listado/{{ m.especialidad }}/page/{{ medicos.paginator.num_pages }}"> >> </a></li>
+	</ul>
+	</div>
+
+	<h4> pagina {{ medicos.number}} de {{ medicos.paginator.num_pages}}</h4>
+{% endif%}
+<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+
+{% endblock %}
+{% block sidebar1 %}
+	
+	
+
+	
+	<li class="active" ><a href="/turnos/listado_especialidades/page/1"> <i class="icon-chevron-right"></i> Solicitar Turnos</a></li>
+	
+	<li ><a href="{% url vista_turnos_reservas %} "><i class="icon-chevron-right"></i> Consultar Turnos</a></li>
+	
+					
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/turnos.png" width="180px" class="img-rounded"/>
+{% endblock %}

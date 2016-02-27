@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title%} Agenda {% endblock %}
+{% block content%}
+<!-- contexto form informaicon-->
+
+<ul class="breadcrumb">
+
+
+	<li><a href="/turnos/listado_especialidades/page/1">Especialidades </a>  <span class="divider">/</span> </li>
+	<li> <a href="/turnos/listado/{{ prestador.especialidad.id }}/page/1">{{prestador.especialidad}}</a><span class="divider">/</span></li>
+	<li ><a href="{%url vista_agenda prestador.id %}"> {{prestador.medico}}: Agenda</a><span class="divider">/</span></li>
+	{%if agregar %}
+	<li class="active">Agregar</a></li>
+	{%else %}
+	<li class="active">Editar</a></li>
+	{%endif%}
+</ul>
+
+
+
+
+
+
+		<form action="." method="POST" enctype="multipart/form-data">
+			<h2> Agenda: <small> {{ prestador}}</small></h2>
+			{% csrf_token %}
+			<table class="table table-hover table-bordered">				
+				
+			{{form.as_table}}
+				</tbody>
+			</table>
+			<input class="btn btn-primary" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>
+				
+			
+		</form>
+		<br>
+		{{informacion}}
+		<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+	
+		
+{% endblock %}
+
+{% block sidebar1 %}
+	
+	
+<li class="active" ><a href="/turnos/listado_especialidades/page/1"> <i class="icon-chevron-right"></i> Solicitar Turnos</a></li>
+	<li ><a href="{% url vista_turnos_reservas %} "><i class="icon-chevron-right"></i> Consultar Turnos</a></li>					
+					
+{% endblock %}
+
+{% block informacion %}
+					<a href="/perfil/ {{prestador.medico.user.id}}"><img src="/media/{{ prestador.medico.user.get_profile.photo}}" width="250px" class="img-polaroid"/></a>
+					
+					<h4>{{ prestador.medico.user.get_full_name }}</h4>
+					<h5> Matricula : <small>{{ prestador.medico.matricula }}</small></h5>
+					<h5><small> {{ prestador.especialidad}}</small></h5>
+					
+					
+					
+{% endblock %}

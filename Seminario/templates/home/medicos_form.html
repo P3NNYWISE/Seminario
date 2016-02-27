@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title%} Profesionales {% endblock %}
+{% block content%}
+<!-- contexto form informaicon-->
+
+
+
+		<form action="." method="POST" enctype="multipart/form-data">
+				<h2>Profesional</h2>
+			{% csrf_token %}
+			<table class="table table-hover table-bordered">
+			{{form.as_table}}
+			
+			
+			</table>
+						<input class="btn" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>
+			
+											
+		</form>
+		<br>
+		
+		<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+		
+	
+		
+{% endblock %}
+{% block sidebar1 %}
+	<li class="active"><a href="{%url vista_medicos %}"><i class="icon-chevron-right"></i> Profesionales</a></li>
+	<li><a href="{%url vista_especialidades %}"><i class="icon-chevron-right"></i> Especialidades</a></li>
+
+
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/Doctor.png" width="180px" class="img-rounded"/>
+{% endblock %}
+

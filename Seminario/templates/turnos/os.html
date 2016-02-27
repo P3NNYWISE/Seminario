@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title%} Obra Sociales {% endblock %}
+
+{% block content %}
+
+{% if obrasocial %}
+<div class="form-style">
+	<h2> Obra Sociales :   </h2>
+<hr />
+	<table class="table table-hover  table-striped">
+		<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th> </th>
+				
+				 
+			</tr>
+		</thead>																																																																													
+    	
+    	<tbody>
+    		<tr>
+    			
+    			<td> Cuit</td>
+    			<td> {{ obrasocial.cuit }}</td>
+    		<tr>								
+    			<td> Nombre</td>																	
+    			<td>{{ obrasocial.nombre }}</td>
+    		</tr>
+    		<tr>
+    			<td> Domicilio</td>
+    			<td>{{ obrasocial.domicilio }}</td>
+    		</tr>
+    		<tr>
+    			<td>Telefono</td>
+    			<td>{{ obrasocial.telefono }}</td>
+    		</tr> 		    				
+    		
+    		
+    		
+    	</tbody>
+    	
+    	
+	   
+	    
+    </table>
+    
+    </div>
+        			<!-- Botonies con iconos-->    				    		
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			<div class="pull-right">
+    		    	<a class="btn btn-mini btn-info" href="{%url vista_os_update obrasocial.cuit%}" title="Editar"><li class="icon-pencil"></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger" data-toggle="modal" title="Deshabilitar"> <li class="icon-trash icon-white"></li></a>
+    		    	<a class="btn btn-mini btn-success" href="{% url vista_os_agregar  %}" title="Agregar" > <i class="icon-plus"></i>  </a> 		
+        								
+    		    </div>			
+    		
+    			{% endif%} 
+    			<a href="{%url vista_obrasociales%} " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+    			
+				
+    
+    
+{% else %}
+    <h2> No se han cargado las Obra Sociales...</h2>
+    <a href="{%url vista_os%}" class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+
+<br /> 
+
+
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Deshabilitar  <b> {{obrasocial.nombre }} </b> </p>
+	</div>
+	<div class="modal-footer">
+		<form action="{% url vista_os_delete obrasocial.cuit %}" method="POST">
+		{% csrf_token %}
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Deshabilitar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal -->
+
+{% endblock %}
+
+{% block sidebar1 %}
+
+
+
+
+	<li class="active"><a href="{%url vista_obrasociales %}"><i class="icon-chevron-right"></i> Obra Sociales</a></li>
+		<li ><a href="{%url vista_cie10 %}" class="active"><i class="icon-chevron-right"></i> Cie 10</a></li>
+			<li ><a href="{%url vista_vademecum %}" class="active"><i class="icon-chevron-right"></i> Vademecum</a></li>
+	<li ><a href="{%url vista_inos %}" ><i class="icon-chevron-right"></i> INOS</a></li>
+	
+					
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/ver.png" width="180px" class="img-rounded"/>
+{% endblock %}

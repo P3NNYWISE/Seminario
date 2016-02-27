@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title%} Listado Especialidades {% endblock %}
+
+{% block content %}
+<!-- Contexto especialidades -->
+
+
+
+
+
+<ul class="breadcrumb">
+	<li class="active">  Especialidades</li>
+	
+</ul>
+
+<h2> Solicitar Turnos :   </h2>
+<div class="row-fluid">
+<div class="span6">	
+<h3> Listado de Especialidades :   </h3>
+
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="POST">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+
+
+
+
+
+
+
+
+{% if especialidades %}
+	<table class="table table-hover table-striped table-bordered">
+		<thead>
+			<tr>
+				<th> Codigo </th>
+				<th> Nombre </th>
+				<th> {% if user.is_authenticated and user.is_staff %}
+						<a class="btn btn-small" href="{%url vista_especialidad_agregar %}" > <i class="icon-plus"></i>  </a>
+					{% endif %}
+				</th>
+		
+			</tr>
+		</thead>
+    	{%for e in especialidades %}
+    	<tbody>
+    		<tr>
+    			<td> {{ e.id }}</td>
+    			<td> <a  href="/turnos/listado/{{ e.id }}/page/1">   {{ e.nombre}} </a> </td>
+    			
+    		
+    		<th></th>
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+{% else %}
+    <h2> No se han cargado las Especialidades ...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+<br /> 
+{% if especialidades %}
+	<div class="pagination">
+		<ul>
+	<li><a href="/turnos/listado_especialidades/page/1"> << </a></li>
+	{% if especialidades.has_previous %}
+		<li><a href="/turnos/listado_especialidades/page/{{ especialidades.previous_page_number }}"> Prev </a></li>
+	{% else %}
+		<li><a href="#"> Prev </a></li>
+	{% endif %}
+	{% if especialidades.has_next %}
+		<li><a href="/turnos/listado_especialidades/page/{{ especialidades.next_page_number }}"> Next </a></li>
+	{% else %}
+		<li><a href="#"> Next </a></li>
+	{% endif %}
+	<li><a href="/turnos/listado_especialidades/page/{{ especialidades.paginator.num_pages }}"> >> </a></li>
+	</ul>
+	</div>
+
+	<h4> pagina {{ especialidades.number}} de {{ especialidades.paginator.num_pages}}</h4>
+{% endif%}
+
+
+{% endblock %}
+
+{% block sidebar1 %}
+
+	<li class="active"><a href="/turnos/listado_especialidades/page/1"> <i class="icon-chevron-right"></i> Solicitar Turnos</a></li>
+	
+	<li ><a href="{% url vista_turnos_reservas %} "><i class="icon-chevron-right"></i> Consultar Turnos</a></li>
+
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/turnos.png" width="180px" class="img-rounded"/>
+{% endblock %}

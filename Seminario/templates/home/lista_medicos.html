@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title%} Lista Profesionales {% endblock %}
+
+
+	{%block js%}
+	<script src="/media/js/jquery.filtertable.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+     	$('table').filterTable({
+     		label: "Filtro   :  ",
+     		placeholder:"Buscar ...",
+     		filterSelector:'#input-filter',
+     	}
+     	); // apply filterTable to all tables on this page
+    });
+</script>
+	
+	{%endblock%}
+
+
+{% block content %}
+
+
+
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span6">	
+<h2>  Profesionales :   </h2>
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+</div>
+<div class="span6">
+<form class="well form-search pull-right" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large search-query" placeholder="Buscar" name="query"  id="input-filter"/>
+		
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+{% if medicos %}
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				
+				<th> Nombre </th>
+				<th> Matricula</th>
+				<th> Cuit </th>
+				<th> Estado </th>
+				
+				
+					{%if user.is_staff%}
+					<th> 
+					<a class="btn btn-mini" href="{% url vista_medicos_agregar  %}" title="Agregar" > <i class="icon-plus"></i> </a>
+					</th>
+					{%endif%}
+     
+				<!-- <th> Direccion </th>
+				<th> Telefono </th> --> 
+				
+			</tr>
+		</thead>																																																																													
+    	{%for medico in medicos %}
+    	<tbody>
+    		<tr>
+    																										
+    			<td> <a href="{% url vista_medicos_detalle medico.matricula %}"> {{ medico.user.get_full_name }} </a></td>
+    					<td> {{ medico.matricula }}</td>
+    					<td> {{ medico.cuit }}</td>
+    					<td> {{ medico.estado }}</td>
+    			
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			<td>
+    		    	<a class="btn btn-mini" href="{% url vista_medicos_update medico.matricula %}" title="Editar" ><li class="icon-pencil"></li>  </a>
+    		    	    {%if medico.estado%}
+    		    	    		      			
+    		    
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ medico.matricula }}" data-name="{{medico.matricula}}" title="Deshabilitar"> <li class="icon-trash icon-white"></li></a>
+    		    	{%endif%}    		      			
+    			</td>    		
+    			{% endif%} 
+    		
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="{% url vista_medicos  %}"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+
+
+    
+    <a href="javascript:window.history.go(-1)" class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+    
+{% else %}
+    <h2> No se han cargado Profesionales...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+    			{%if user.is_authenticated and user.is_staff %}
+    <a class="btn btn-primary" href="{% url vista_medicos_agregar  %}" title="Agregar" > <i class="icon-plus icon-white"></i> Agregar </a>
+    {%endif%}
+{% endif%}
+<br /> 
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Deshabilitar Matricula N° <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/medicos/delete/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Deshabilitar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+{% block sidebar1 %}
+	
+	<li class="active"><a href="{%url vista_medicos %}"><i class="icon-chevron-right"></i> Profesionales</a></li>
+	{%if user.is_authenticated and user.is_staff %}
+
+	{%endif%}
+	{%if user.is_authenticated and user.is_staff %}
+		<li><a href="{%url vista_especialidades %}"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	
+	{%else%}
+		<li ><a href="/turnos/listado_especialidades/page/1"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	{%endif%}
+	
+
+					
+{% endblock %}
+
+{% block informacion %}
+	<img src="/media/images/iconos/Doctor.png" width="180px" class="img-rounded"/>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

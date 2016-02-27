@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title%} Lista Pacientes {% endblock %}
+
+<!-- Contexto Pacientes -->
+{%block js%}
+<script src="/media/js/jquery.filtertable.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+     	$('table').filterTable({
+     		label: "Filtro   :  ",
+     		placeholder:"Buscar ...",
+     		filterSelector:'#input-filter',
+     	}
+     	); // apply filterTable to all tables on this page
+    });
+</script>
+
+<style>
+		.filter-table .quick { margin-left: 0.5em; font-size: 0.8em; text-decoration: none; }
+		.fitler-table .quick:hover { text-decoration: underline; }
+		td.alt { background-color: #ffc; background-color: rgba(255, 255, 0, 0.2); }
+		
+		
+		
+</style> <!-- or put the styling in your stylesheet -->
+{%endblock%}
+
+
+
+
+{% block content %}
+
+
+<div class="row-fluid">
+<div class="span6">
+	<h2> Pacientes: </h2>	
+
+</div>
+
+
+
+
+
+
+
+<div class="span6">
+	<form class="well form-search pull-right " action="." method="get" >	
+		<div class="input-append ">	
+			<input type="text" class="input-large  search-query" placeholder="Buscar" name="query" id="input-filter"/>
+			{% csrf_token %}
+			<button type="submit" class="btn"> <i class="icon-search"></i></button>
+		</div>
+		
+	</form>
+</div>
+</div>
+
+
+{% if pacientes %}
+	<table class="table  table-striped table-hover  table-bordered">
+		<theader>
+			<tr>
+				<th> DNI </th>
+				<th> Nombre </th>
+				<th> E-mail </th>
+				<th>
+					{% if user.is_authenticated and user.is_staff%}
+					
+							<a class="btn btn-small" href="{%url vista_registro%}" title="Agregar"> <i class="icon-plus"></i> </a>
+				
+					{% endif %}
+					</th>	
+				
+			</tr>
+		</theader>
+    	{%for p in pacientes %}
+    	<tbody>
+    		<tr>
+    			<td> {{p.get_profile.dni  }}</td>
+    			<td> <a href="{%url  vista_perfil  p.id %}"> {{ p.get_full_name }}</a></td>
+    			<td>{{ p.email }}</td>
+    			
+    			    			
+    			
+    				<td>
+    					<!--<a class="btn" href="{%url  vista_perfil  p.id %}"><li class="icon-eye-open"></li> Perfil </a>--> 
+    				<a class="btn btn-small" href="{%url vista_hce p.id%}"  title="Historia Clinica"><li class="icon-folder-open"></li></a> 
+    				
+    				
+    				</td>
+    			
+    		
+    		</tr>
+    	</tbody>
+  	
+    	
+	   
+	    {%endfor%}
+    </table>
+
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="{% url vista_pacientes  %}"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+
+
+
+
+
+{% else %}
+    <h2> No se han cargado las Pacientes...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+<br /> 
+
+
+
+{% endblock %}
+
+
+{% block sidebar1 %}
+
+
+		<li class="active"> <a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce_listado%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+	{%if historia_clinica %}
+		{%if consultas%}
+		<li><a href="{%url vista_consultas historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		{%endif%}
+	<li><a href="{%url vista_consulta_agregar historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Nueva Consulta</a></li>
+	{%endif%}
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/DatosPaciente.png" width="180px" class="img-rounded"/>
+{% endblock %}

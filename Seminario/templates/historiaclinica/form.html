@@ -1,0 +1,56 @@
+{% extends "base.html"%}
+{% block title%} Consultas {% endblock %}
+{% block content%}
+<!-- contexto form informaicon-->
+    <!-- Here ADMIN_MEDIA_PREFIX is path to django admin media -->
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" /> 	
+	<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+	<script type="text/javascript" src="/media/js/jsi18n.js"></script>
+	<script type="text/javascript" src="/static/admin/js/core.js"></script>
+	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+	<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+	<script type="text/javascript" src="/static/admin/js/SelectBox.js"></script>
+	<script type="text/javascript" src="/static/admin/js/SelectFilter2.js"></script>
+	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+	<!--		
+    <script type="text/javascript" src="/media/admin/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/media/admin/js/jquery.init.js"></script>      
+	<script type="text/javascript" src="/admin/jsi18n/"></script>    
+    <link rel="stylesheet" type="text/css" href="/media/css/widgets.css" >    
+	-->
+	<h2>Consulta Medica</h2>
+		<form action="." method="POST" enctype="multipart/form-data">	
+			<table class="table table-hover table-bordered">
+				<tr>
+					<td>
+				<label>Prestador : </label>
+				</td>
+					<td>
+				<select name="prestador">
+					{% for instance in prestador%}
+					<option value="{{instance.id}}"> {{instance}}</option>
+					{%endfor%}
+				</select>
+				</td>							
+			</table>																			
+			{{form.as_p}}			
+			{% csrf_token %}			
+			<input class="btn" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>										
+		</form>
+		<br>		
+		<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+			
+{% endblock %}
+
+
+
+
+
+
+

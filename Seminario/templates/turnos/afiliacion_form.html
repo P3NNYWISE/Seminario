@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title%} Afiliaciones {% endblock %}
+{% block content%}
+<!-- contexto form informaicon-->
+
+	
+
+
+		<form action="." method="POST" enctype="multipart/form-data">
+				<h2>Afiliaciones</h2>
+			{% csrf_token %}
+			<table class="table table-hover table-bordered">
+			
+			{{form.as_table}}
+			</table>
+			<input class="btn" type="submit" value="Grabar" />
+			<input class="btn" type="reset" value="Limpiar"/>
+											
+		</form>
+		<br>
+		
+		<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+		
+	
+		
+{% endblock %}
+
+{% block sidebar1 %}
+
+
+		<li> <a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+	{%if historia_clinica %}
+		
+		{%if consultas%}
+		<li><a href="{%url vista_consultas historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		{%endif%}
+	<li><a href="{%url vista_consulta_agregar historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Nueva Consulta</a></li>
+	{%endif%}
+		<li class="active"><a href="{%url vista_afiliacion afiliado.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+					
+{% endblock %}
+
+
+{% block informacion %}
+
+					<h5>{{ afiliado.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ historia_clinica.id }} </h5>
+					
+					<a href="/perfil/{{ afiliado.id}}" title="Perfil"><img src="/media/{{afiliado.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+{% endblock %}

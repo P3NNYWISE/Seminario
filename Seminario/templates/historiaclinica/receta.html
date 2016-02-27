@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title%} Receta De Medicamentos {% endblock %}
+
+{% block content %}
+{% if receta %}
+<div class="form-style">
+<p><h2> Receta de Medicamentos  :         </h2>
+	<hr size="20"/>
+	
+	
+{%if receta.estado == "Activo"%}
+	<div class="alert alert-success">
+		
+{%elif receta.estado == "Anulado"%}
+		<div class="alert alert-error">
+		
+		
+{%endif%}
+<h4> Estado : {{ receta.estado }}</h4>
+</div>
+	
+	
+	<div class="row-fluid">
+
+	<div class="span7">
+	<h4> Prestador : <small> {{ receta.prestador }}</small></h4>
+	<h4> Obra Social  : <small> {{ receta.os_receta.obrasocial }}</small></h4>
+	</div>
+		<div class="span5">
+	<h4> Nro Receta  :<small>  {{ receta.id }}</small></h4>
+	 <h4>  Fecha :<small>  {{ receta.fecha }}</small></h4>
+	</div>
+	</div>
+</p> 
+
+
+<hr />
+<h4> Detalle de Receta</h4>
+
+
+
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				<th> Medicamento</th>
+				
+				
+				<th> Indicaciones</th>
+			</tr>
+		</thead>																																																																													
+    	
+    	<tbody>
+    		
+    		
+    		
+    		{% for d in detalle %}
+    		<tr>		
+    			<td> {{d.medicacion}}</td>
+    			
+    			<td>  {{d.indicaciones}} </td>
+    			
+    			
+    		</tr>
+    	
+    
+
+    		
+    		
+    		{%endfor%}
+    		    	</tbody>
+   
+	    
+    </table>
+    <h4>  Observaciones : {{ receta.observaciones }}</h4>
+
+    <br /> <br />
+        <hr /> 
+
+
+        			<!-- Botonies con iconos-->    		        		        		        	        		        					    		 
+    			<div class="pull-right">
+    					
+        				
+        				    				    			    		    	 		
+    			    	{%if user.is_authenticated and user.is_staff %}   
+    						    			    							
+    		    		<a class="btn btn-mini btn-info" href="{%url vista_receta_editar receta.id%}" title="Editar"><li class="icon-pencil icon-white"></li>  </a>
+    		    	
+    		    		{% endif%}
+    		    			
+        			<a href="#myModal" role="button" class="btn btn-mini btn-danger" data-toggle="modal" title="Anular"> <li class="icon-trash icon-white"></li></a>
+        		
+        		 
+        			
+    		    </div>			
+    		
+  </div>  			
+    		
+    			<a href="{%url vista_recetas receta.historia_clinica.id%} " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+    			
+    			
+    			
+    			
+				
+    
+    
+{% else %}
+    <h2> No se han cargado Practicas Medicas...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+
+<br /> 
+
+
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Anular  <b> {{ receta}} </b> </p>
+	</div>
+	<div class="modal-footer">
+		<form action="{% url vista_receta_delete receta.id %}" method="POST">
+		{% csrf_token %}
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Anular" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal -->
+
+
+
+
+{% endblock %}
+{% block sidebar1 %}
+
+
+		<li><a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce receta.historia_clinica.paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion prescripcion.historia_clinica.paciente.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+	
+		
+		<li><a href="{%url vista_consultas receta.historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		
+		
+		
+		
+		<li  ><a href="{%url vista_practicas receta.historia_clinica.id%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+		<li class="active" ><a href="{%url vista_recetas receta.historia_clinica.id%}"><i class="icon-chevron-right"></i> Recetas</a></li>
+		
+
+					
+{% endblock %}
+
+
+{% block informacion %}
+
+					<h5>{{ receta.historia_clinica.paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ receta.historia_clinica.id }} </h5>
+					<a href="/perfil/{{ receta.historia_clinica.paciente.id}}"><img  src="/media/{{ receta.historia_clinica.paciente.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+{% endblock %}
+
+
+

@@ -1,0 +1,87 @@
+{% extends "base-nosidebar.html" %}
+{% block title %} Contactanos {% endblock %}
+{% block content%}
+
+
+<script type="text/javascript">
+     $(document).ready(function() {
+     	$("textarea").addClass('input-block-level');
+     	$("input").addClass('input-block-level');
+     });
+</script>
+
+<style>
+      .form-contact {
+        max-width: 600px;
+        padding: 20px 29px 29px; 
+        margin: 20px 50px 20px;
+        background-color: #fff;
+        border: 3px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+
+
+</style>
+
+<!-- Contexto  form  , email , titulo, texto , info_enviado --> 
+{% if info_enviado %}
+	Gracias por enviar su comentario, nos pondremos en contacto con usted
+	<br>
+	la informacio es la siguiente <br>
+	<p>email utilizado : {{email}}</p>
+	<p> titulo: {{titulo}}</p>
+	<p> texto citado:  </p>
+	<br><h3>{{texto}}</h3>
+{% else %}
+
+<!-- Formulario -->
+   
+   
+
+     <div class="titulo" align="center">
+      <h1>  Sistema Online de Gestion Medica
+      </h1>
+      <hr>
+      </div>
+
+
+<div class="form-contact offset2" >
+	
+        <h2 class="form-signin-heading">  Formulario de Contacto   <img class="img-rounded pull-right" src="/media/images/logo6.jpg" width="55px" height="30px" /></h2>
+        <hr/>
+
+
+
+
+  
+	<hr/>
+	<form action="." method="POST">
+		{% csrf_token%}
+		{{ form.as_p}}
+		<input class="btn btn-primary pull-right" type="submit"  value="Enviar Comentario"/>
+	<!-- <buttom class="btn btn-primary" type="submit"> Enviar Comentario </buttom> botones azules--> 
+	</form>
+</div>
+
+
+
+
+
+
+
+{% endif %}
+
+{% endblock %}
+
+
+
+          {% block informacion %}
+  <img src="/media/images/iconos/icono-contacto.jpg" width="180px" class="img-rounded"/>
+{% endblock %}
+
+

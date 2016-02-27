@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title%} Lista Practicas Medicas{% endblock %}
+
+{% block content %}
+<script type = "text/javascript">
+	$(document).ready(function() {
+       	$('table').filterTable({
+       			autofocus: true,
+     			filterSelector:'#input-filter',		
+     	        }
+       			
+    }
+ </script>
+<div class="row-fluid">
+<div class="span6">	
+<h2> Practicas Medicas :   </h2>
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+<!--
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append pull-right">				
+		<input type="hidden" class="input-large  search-query" placeholder="Buscar" name="query" value="si"/>
+		
+		
+		{% csrf_token %}
+		<button type="submit" class="btn"> Mis Practicas <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+-->
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar Nro Prescripcion" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+
+
+
+
+
+
+
+</div>
+{% if practicas %}
+	<table class="table table-hover table-striped table-bordered">
+		<thead>
+			<tr>				
+				<th> Fecha </th>
+				<th> Nro </th>
+				<th> Prestador </th>
+				<th> Estado </th>
+				<th> 
+					{% if medico%}
+					<a class="btn btn-mini btn-primary" href="{% url vista_practica_registrar  expediente %}" title="Agregar" > <i class="icon-plus icon-white"></i> </a>
+					{%endif%}
+					
+     			</th>
+
+			</tr>
+		</thead>																																																																													
+    	{%for practica in practicas %}
+    	<tbody>
+    		<tr>
+    																										
+    			<td> <a href="{% url vista_practica_detalle practica.id %}"> {{ practica.fecha }} </a></td>
+    					<td> {{ practica.id }}</td>
+    					<td> {{ practica.prestador }}</td>
+    					<td> {{ practica.estado }}</td>
+    			<td>
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			
+    		    	<a class="btn btn-mini" href="{% url vista_practica_editar practica.id %}" title="Editar" ><li class="icon-pencil "></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ practica.id }}" data-name="{{ practica}}" title="Anular"> <li class="icon-trash icon-white"></li></a>    		      			
+    			    		
+    			{% endif%}
+    			</td> 
+    		
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="?page=1"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+
+
+
+    
+    <a href="{%url vista_practicas expediente%}" class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar</a>
+    
+
+    
+{% else %}
+	<div class="alert alert-error">
+		<p> No se han cargado Practicas Medicas..
+			    <!--
+    <a href="{%url vista_practica_registrar  expediente %}" class="btn btn-primary"> <i class="icon-file icon-white"></i> Cargar Prescripcion</a>
+    -->
+    		
+			
+			</p>
+	</div>
+
+
+
+    
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+
+{% endif%}
+<br /> 
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Anular  <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/practicas/delete/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Anular" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+
+{% block informacion %}
+
+					<h5>{{paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ expediente }} </h5>
+					<a href="/perfil/{{paciente.id}}"><img src="/media/{{paciente.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+{% endblock %}
+
+{% block sidebar1 %}
+
+
+		<li><a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion paciente.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+	
+		
+		<li ><a href="{%url vista_consultas expediente%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		<li class="active" ><a href="{%url vista_practicas expediente%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+				<li  ><a href="{%url vista_recetas expediente %}"><i class="icon-chevron-right"></i> Recetas</a></li>	
+		
+{% endblock %}

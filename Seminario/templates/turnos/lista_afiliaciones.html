@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title%} Lista Afiliaciones {% endblock %}
+
+{% block content %}
+<!-- Contexto afiliaciones -->
+<div class="row-fluid">
+<div class="span6">	
+<h2> Afiliaciones :   </h2>
+
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+{% if afiliaciones %}
+
+
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				
+				<th> Afiliado </th>
+				<th> Obra Social </th>
+				
+				<th> Beneficiario </th>
+				<th>Titular </th>
+				<th>Estado </th>
+				<th>
+				  {% if user.is_authenticated and user.is_staff %}
+						<a class="btn btn-mini " href="/afiliacion/agregar/{{afiliaciones.0.afiliado.id}}" title="Agregar" > <i class="icon-plus"></i> </a>
+					{% endif %}	
+					
+					 
+				 </th> 
+				
+			</tr>
+		</thead>																																																																													
+    	{%for afiliacion in afiliaciones %}
+    	<tbody>
+    		
+    		<tr >
+    																										
+    			<!--<td> <a href="{% url vista_os os.cuit %}"> {{ os.nombre }} </a></td>-->
+    			
+    			<td> {{ afiliacion.afiliado.get_full_name }}</td>
+    			<td><a href="{%url vista_afiliacion_detalle afiliacion.id %}"> {{ afiliacion.obrasocial.nombre }}</a></td>
+    			<td> {{ afiliacion.beneficiario }}</td>
+    			<td> {{ afiliacion.titular }}</td>
+    			<td> {{ afiliacion.estado }}</td>
+    			
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			<td>
+    		    	<a class="btn btn-mini" href="{% url vista_afiliacion_update afiliacion.id %}" title="Editar" ><li class="icon-pencil"></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ afiliacion.id }}" data-name="{{afiliacion}}" title="Deshabilitar"> <li class="icon-trash icon-white"></li></a>    		      			
+    			</td>    		
+    			{% endif%} 
+    		
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+  
+    
+    
+{% else %}
+    <h2> No se han cargado las Afiliaciones...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i> Regresar</a>
+    {% if user.is_authenticated  %}
+	<a class="btn btn-primary " href="/afiliacion/agregar/{{ paciente.id}}" title="Agregar" > <i class="icon-plus icon-white"></i> Agregar Afilicion</a>
+	{% endif %}	
+    
+    
+    
+{% endif%}
+<br /> 
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="#"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+	
+	
+</div>
+{% endif%}
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea Deshabilitar  <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action='/afiliacion/delete/'>
+		{% csrf_token %}		
+		<input type="hidden" id="modal_iditem" name="afiliacion_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Deshabilitar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+
+
+{% block sidebar1 %}
+
+
+		<li> <a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		
+		<li><a href="{%url vista_hce paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+	{%if historia_clinica %}
+		
+		{%if consultas%}
+		<li><a href="{%url vista_consultas historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		{%endif%}
+	<li><a href="{%url vista_consulta_agregar historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Nueva Consulta</a></li>
+	{%endif%}
+		<li class="active"><a href="{%url vista_afiliacion afiliaciones.0.afiliado.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+					
+{% endblock %}
+
+
+{% block informacion %}
+
+					<h5>{{paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ historia_clinica.id }} </h5>
+					<a href="/perfil/{{paciente.id}}" title="Perfil"><img src="/media/{{paciente.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+					
+					
+{% endblock %}
+
+

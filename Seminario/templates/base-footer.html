@@ -1,0 +1,243 @@
+<!DOCTYPE html >
+<html>
+	<head>
+		<meta charset='"UTF-8"' />
+		<title> {% block title %} Bienvenidos {% endblock %}</title>
+		
+		<link rel="stylesheet" href="/media/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="/media/bootstrap/css/bootstrap-responsive.css">
+		<script src="/media/js/jquery.js"></script> 
+		<script src="/media/bootstrap/js/bootstrap.js"></script>
+		
+		
+		<style type="text/css "> 
+			body{
+				padding-top: 60px;
+				padding-bottom: 40px;
+				 height:100%;
+				}
+				.sidebar-nav{
+					padding: 9px 0;
+				}
+						/* styles for layout */
+				html
+				{
+				    height:100%;
+				}
+				 
+				#wrap
+				{
+				  min-height: 100%; 
+				}
+				 
+				#main
+				{
+				    overflow:auto;
+				    padding-bottom:150px; /* this needs to be bigger than footer height*/
+				}
+				 
+				.footer
+				{
+				    position: relative;
+				    margin-top: -150px; /* negative value of footer height  	    color:#fff;*/
+				    height: 150px;
+				    clear:both;
+				    padding-top:20px;
+				    color:#000;
+			
+				} 
+				
+				
+		</style> 
+
+		<!-- WebServices 
+		<script type="text/javascript">
+			$(document).on('ready',function(){
+				$.ajax({
+					type:"GET",
+					ContentType:"Application/json;charset=utf-8",
+					dateType:"json",
+					url:"/ws/productos/",
+					success:function(response){
+						//console.log(response)
+						var i=(response.length-1)-2;
+						for(i;i<=(response.length-1);i++){
+							$('#ProductosNuevos').append("<li>"+ response[i].fields.nombre+"</li>");
+						}
+						
+					}
+				});				
+			});
+				
+			
+		</script> -->
+		
+	</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top ">
+		<div class="navbar-inner">
+			
+			
+			<a class="brand" href="{% url vista_principal %}"> 		Seminario </a>
+
+			<ul class="nav ">
+				
+				{% if user.is_authenticated %}
+					<!-- <li><a href=" #"> Administracion </a></li>
+						<li><a href="
+							 #"> Consultas </a></li>-->
+							{% if user.is_staff %}
+				<li class="dropdown">
+					<a class="dropdown-toggle " data-toggle="dropdown" href="#"> {{user.groups.all.id }}Administracion <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<!-- links -->
+						<li><a href="/listado-pacientes/page/1"> Pacientes </a></li> 
+						<li><a href="#"> Historias Clinicas </a></li>
+						<li><a href="/listado-os/page/1"> Obra Sociales  </a></li>  
+					
+					</ul>
+				</li>
+					
+						
+			
+				<li class="dropdown">
+					<a class="dropdown-toggle " data-toggle="dropdown" href="#">Medicos <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<!-- links -->
+						<li><a href="#"> Turnos </a></li> 
+						<li><a href="/listado-pacientes/page/1"> Pacientes </a></li>
+						<li><a href="#"> Historias Clinicas </a></li> 
+					
+					</ul>
+				</li>
+				
+				{%endif%}
+					<li><a href=" /turnos/listado_especialidades/page/1"> Turnos </a></li>
+			
+			
+				{% endif %}
+				<li><a href="{% url vista_contacto %}"> Contacto </a></li>
+				<li><a href="{% url vista_about %}"> Acerca de.. </a></li>
+		
+				
+			</ul>
+			<!-- Segunda Barra a la derecha-->
+			<ul class="nav pull-right">
+				{% if user.is_authenticated %}
+				<li class="dropdown">
+					<a class="dropdown-toggle " data-toggle="dropdown" href="#">	 Usuario {{user.username}} <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<!-- links -->
+						<li><a href="{% url vista_editar_perfil %}"> Perfil </a></li> 
+						<li><a href="{% url vista_logout %}"> Cerrar Session</a></li> 
+					
+					</ul>
+				</li>
+				{% else %}
+					<li><a href="{% url vista_login %}"> Login</a></li>
+				{% endif %}
+			</ul>
+		</div>
+	</div> <!-- navbar -->
+		
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span9">
+				<div class="hero-unit">
+					{% block content %}
+					{% endblock %}			
+				</div>
+			</div>
+		
+		<div class="span3">
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header"> Descripcion</li>
+					{% block sidebar1 %}
+					{% endblock %}
+					  <p align="justify"> Software destinado a consultarios</p>
+					  <p align="justify"> Sanatorios, para la gestion de pacientes </p>
+					  <p align="justify"> Turnos e Historias Clinicas </p>
+				</ul>
+			</div> <!-- Well -->
+		</div> <!--span3-->
+		<div class="span3">
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list " id="ProductosNuevos">
+					<li class="nav-header"> Novedades</li>
+		
+				</ul>
+			</div> <!-- Well -->
+			
+	
+		</div> <!--span3-->
+
+		
+	
+		</div> <!--row -->
+</div><!--container-->	
+
+
+		<!-- <footer class="row"> -->
+
+		
+
+<!-- <hr style='clear:both;'>   -->
+<footer class="footer" style="background-color:#c2c2c2;"> 
+    <div class="container" style="margin:0 auto;">
+        <div class="row">
+            <div class="span2 offset2">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="">About Us</a></li>
+                    <li><a href="">Contact</a></li>
+                </ul>
+            </div>
+            <div class="span2 offset1">
+                <h4>Resource</h4>
+                <ul>
+                    <li><a href="">Get help</a></li>
+                    <li><a href="">FAQ</a></li>
+                    <li><a href="">Support</a></li>
+                </ul>
+            </div>
+            <div class="span2 offset1">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="" title="Facebook">Facebook</a></li>
+                    <li><a href="" title="Twitter">Twitter</a></li>
+                    <li><a href="" title="LinkedIn">LinkedIn</a></li>
+                    <li><a href="" title="Google+">Google+</a></li>
+                    <li><a href="" title="RSS">RSS</a></li>
+                  
+                </ul>
+            </div>
+        
+        </div>
+            
+    </div>
+     <p>  &copy; Catedra Seminario de Computacion 2013 - Fabio G Rodriguez  
+			
+			<img src="/media/images/python-logo.gif" width="160px" height="100px" />	
+			<img src="/media/images/django.gif" width="110px" height="100px" />
+			    </p>
+</footer>
+		
+	<!--	
+		<p>  &copy; Catedra Seminario de Computacion 2013 - Fabio G Rodriguez  
+			
+			<img src="/media/images/python-logo.gif" width="160px" height="100px" />	
+			<img src="/media/images/django.gif" />
+			    </p>
+		
+	</hr> -->
+
+
+<!-- 	</footer>-->
+	
+</body>
+</html>
+

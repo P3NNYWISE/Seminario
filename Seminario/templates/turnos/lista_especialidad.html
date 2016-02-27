@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title%} Lista Especialidades Medicas {% endblock %}
+
+{% block content %}
+<!-- Contexto obrasociales -->
+<div class="row-fluid">
+<div class="span6">	
+<h2> Especialidades :   </h2>
+<!--
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url vista_os_agregar  %}" > <i class="icon-plus"></i> Agregar </a>
+{% endif %}
+
+-->
+</div>
+<div class="span6">
+<form class="well form-search" action="." method="get">
+	
+	<div class="input-append">				
+		<input type="text" class="input-large  search-query" placeholder="Buscar" name="query"/>
+		{% csrf_token %}
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>
+	</div>
+</form>
+</div>
+</div>
+{% if especialidades %}
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				
+				<th> Nombre </th>
+				<th> Estado </th>
+				
+				
+				<th> 
+					
+					<a class="btn btn-mini" href="{% url vista_especialidad_agregar  %}" title="Agregar" > <i class="icon-plus"></i> </a>
+					
+     </th>				
+			</tr>
+		</thead>																																																																													
+    	{%for especialidad in especialidades %}
+    	<tbody>
+    		<tr>
+    																										
+    			<td> <a href="{% url vista_especialidad especialidad.id %}"> {{ especialidad.nombre }} </a></td>
+    					
+    			 <td>{%if especialidad.estado %}
+    				<i class="icon-ok"></i>
+ 					{%else%}
+ 					<i class="icon-remove icon-red"></i>   
+ 					{%endif%}				
+    			</td>
+    			
+    			
+    			{%if user.is_authenticated and user.is_staff %}   
+    						    			    			
+    			<td>
+    		    	<a class="btn btn-mini" href="{% url vista_especialidad_update especialidad.id %}" title="Editar" ><li class="icon-pencil"></li>  </a>
+    		    	{%if especialidad.estado%}
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger delete" data-toggle="modal" id="{{ especialidad.id }}" data-name="{{especialidad.nombre}}" title="Eliminar"> <li class="icon-trash icon-white"></li></a>
+    		    	{%endif%}    		      			
+    			</td>    		
+    			{% endif%} 
+    		
+    		</tr>
+    	</tbody>
+	   
+	    {%endfor%}
+    </table>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar</a>
+    
+{% else %}
+    <h2> No se han cargado las Obra Sociales...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+<br /> 
+{% if is_paginated %}
+<div class="row-fluid">
+	<div class="span8">
+	<div class="pagination" >
+		<ul>
+		<li><a href="{% url vista_obrasociales  %}"> << </a></li>
+		{% if page_obj.has_previous %}
+			<li><a href="?page={{ page_obj.previous_page_number }}"> Prev </a></li>
+		{% endif %}
+		
+		{% for pg in paginator.page_range %}
+		{% if page_obj.number == pg %}
+			<li class="active"> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% else %}
+			<li> <a href="?page={{ pg }}"> {{pg}}</a> </li>
+		{% endif %}
+
+		
+		{% endfor %}
+
+		
+		
+		{% if page_obj.has_next %}
+			<li><a href="?page={{ page_obj.next_page_number }}"> Next </a></li>
+	
+		{% endif %}
+		<li><a href="?page={{ paginator.num_pages }}"> >> </a></li>
+		</ul>
+	</div>
+	</div>
+	<div class="span4">
+	<h4> pagina {{ page_obj.number }} de {{ paginator.num_pages}}</h4>
+	</div>
+</div>
+{% endif%}
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea eliminar  <span id="modal_name"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 <form id="frmEliminar"  method="POST" action="/especialidad/delete/">
+		{% csrf_token %}		
+		<input type="hidden" id="modal_idtem" name="product_id">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Eliminar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal 
+	action="{% url vista_os_delete obrasocial.cuit %}"
+	-->
+
+{% endblock %}
+
+{% block sidebar1 %}
+
+	<li><a href="{%url vista_medicos %}"><i class="icon-chevron-right"></i> Profesionales</a></li>
+	<li class="active"><a href="{%url vista_especialidades %}"><i class="icon-chevron-right"></i> Especialidades</a></li>
+
+
+					
+					
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/folder.png" width="180px" class="img-rounded"/>
+{% endblock %}

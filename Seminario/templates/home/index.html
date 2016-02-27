@@ -1,0 +1,71 @@
+
+	{% extends "base.html" %}
+
+
+{% block title%} Inicio - Bienvenidos {% endblock %}
+		
+
+
+{% block content %} 
+
+    
+
+
+<h2> Sistema Online de Gestion Medica	</h2>
+<hr>
+
+{% if user.is_authenticated %}
+
+
+
+
+<br />
+
+<div class='container '> 
+	<div class="row">
+
+		<div class="span3 ">
+			{% if user.get_profile.photo %}
+				<img src="/media/{{ user.get_profile.photo }}" class="img-circle " width="200px" height="250px"/>
+			{% endif %}
+
+
+		</div>
+		<div class="span6 ">
+			<h3> Bienvenido Usuario: {{ user.username}}</h3>
+
+
+			{% if user.get_full_name %}
+				<p> Nombre :  {{ user.get_full_name }}</p>		
+			{% endif %}
+
+			{% if user.get_profile.telefono %}
+				<p> Numero Telefonico :  {{ user.get_profile.telefono }}</p>
+				
+			{% endif %}
+			<br>
+			<h6> Ultimo Acceso : {{user.last_login}}</h6>
+			
+
+		</div>
+		
+	</div>
+
+
+</div>
+
+
+
+
+<!-- Portada -->
+
+
+
+
+
+
+
+{% endif %}
+
+
+{% endblock%}

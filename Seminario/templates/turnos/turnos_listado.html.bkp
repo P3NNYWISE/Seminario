@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block title%} Planilla Turnos {% endblock %}
+
+{% block content %}
+<!-- Contexto  Turnos-->
+
+		<meta charset="utf-8" />
+		<!-- <script src="/media/js/jquery.js"></script> -->
+		 
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+		<link rel="stylesheet" href="/media/fullcalendar/fullcalendar.css" />		
+		<script src="/media/fullcalendar/fullcalendar.js"></script>
+		
+		
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		//Calendario
+		
+		var calendar = $('#calendar').fullCalendar({
+			height : 650 ,
+
+			aspectRatio : 0.5 ,
+			//weekends : false,
+			hiddenDays : [0],
+			//slotMinutes: parseInt("{{duracion}}",10 ),
+			slotMinutes: 15, 
+			columnFormat: {
+				month: 'ddd',
+				week:'ddd d/M',
+				day:'dddd d/M',
+			},
+			buttonText: {
+				today: 'Hoy',
+				month : 'Mes',
+				week: 'Semana',
+				day: 'Dia',
+
+				
+			},
+			dayNames:['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'],
+			dayNamesShort:['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+			firstHour : 8 ,
+			minTime : 6,
+			maxTime : 22,
+			header :{
+				left : 'prev,next today' ,
+				center : 'titulo',
+				right : 'month,agendaWeek,agendaDay',
+			},
+			defaultView: 'agendaDay',
+			
+			//selectable : true,
+			selectHelper : false,
+			
+			select : function(start,end,allDay){
+				var titulo =  prompt('Evento');
+				if (titulo){
+					calendar.fullCalendar('renderEvent',
+					{
+						title: titulo,
+						start : start ,
+						end: end,
+						allDay :allDay,
+					},
+					true
+					);	
+				}//if
+				calendar$.fullCalendar('unselect');
+			},//select
+			editable:true,
+			
+			eventSources : [{
+				url: "/turnos/calendario/{{prestador.id}}/",
+				
+				//textColor: 'black',
+				
+			}],
+			
+			eventClick : turnoClick,
+			
+						
+		});		//fin Calendario
+		function turnoClick(calEvent , jsEvent , view) {
+				//funcion activa al hacer click sobre un evento turno
+				if(calEvent.title == ""){
+					//$('#modal_name').text('Reservar : ' + calEvent.start);
+					var accion = 'Reservado : ';
+					$('#myModalLabel').text('Desea Reservar el Turno ');
+					$('#modal_fecha').text($.fullCalendar.formatDate(calEvent.start, 'dd-MM-yyyy'));
+					$('#modal_hora').text( $.fullCalendar.formatDate(calEvent.start, 'HH:mm:ss'));
+					$('#myModalSubmit').val('Reservar');
+					$('#myModalTurnos').modal('toggle');
+					$('#myModalSubmit').click(function(){
+						$.ajax({
+						url:'/turnos/reserva/'+calEvent.id ,
+						type: 'get',
+						success: function(data){
+							console.log(data);
+							//$('#calendar').fullCalendar('refetchEvents');
+							calEvent.title=data['title'];
+							$('#calendar').fullCalendar('updateEvent',calEvent);
+							}//success
+						
+						});				//ajax
+						$('#myModalTurnos').modal('hide');
+					});//click
+					
+					
+					
+					
+				}  //if
+				else 
+				{
+					if (calEvent.title =="{{user.get_full_name }}"){
+					
+					$('#myModalLabel').text('Desea Cancelar el Turno ');
+					$('#modal_fecha').text($.fullCalendar.formatDate(calEvent.start, 'dd-MM-yyyy'));
+					$('#modal_hora').text( $.fullCalendar.formatDate(calEvent.start, 'HH:mm:ss'));
+					$('#myModalSubmit').val('Cancelar');
+					$('#myModalTurnos').modal('toggle');
+					
+					
+					$('#myModalSubmit').click(function(){
+						$.ajax({
+						url:'/turnos/anular/'+calEvent.id ,
+						type: 'get',
+						success: function(data){
+							console.log(data);
+							//$('#calendar').fullCalendar('refetchEvents');
+							calEvent.title=data['title'];
+							$('#calendar').fullCalendar('updateEvent',calEvent);
+							}//sucess
+						
+						}); //ajax				
+						$('#myModalTurnos').modal('hide');
+					});	//click
+						
+					
+				}//if
+				}//else
+			
+					
+								//alert('Event : '+ calEvent.id + calEvent.title);
+				
+				$(this).css('background-color','red');
+				//$('#calendar').fullCalendar('refetchEvents');
+			}//eventclick
+	// ir al dia de hoy
+	calendar.fullCalendar('gotoDate',"{{dia_atencion.fecha.year}}",(parseInt("{{dia_atencion.fecha.month}}",10)-1),"{{dia_atencion.fecha.day}}");
+	
+	});//document
+
+	
+	
+</script>
+
+
+
+
+<h3> Profesional : {{ prestador }}  </h3>
+<h4> Turnos del dia :   {{ dia_atencion.fecha }}  </h4>
+
+
+
+<div id="calendar"></div>
+
+
+<!-- Modal -->
+<div  id="myModalTurnos" class="modal hide fade" >
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">  </h3>
+	</div>
+	<div class="modal-body">
+		
+		<p>Profesional : {{prestador }}</p>
+		<p>Fecha : <span id="modal_fecha"></span> </p>
+		<p>Hora :     <span id="modal_hora"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-primary" id ='myModalSubmit' type="submit" value="Reservar" />
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+{% if user.is_authenticated  and user.is_staff %}
+	<a class="btn" href="/turnos/pdf/{{ dia_atencion.id }}"> <i class="icon-file"></i> Generar</a><br />
+{% endif %}
+
+
+{% if listado %}
+{%for turnos in listado%}
+		<table class="table table-hover table-striped">
+			<theader>
+				<tr>
+					<th> Hora </th>
+					 <th> Paciente </th>
+					<!-- <th> fecha </th>-->
+					
+					<th> Observacion </th>
+					<th> </th>
+			
+				</tr>
+			</theader>
+	    	{%for t in turnos %}
+	    	<tbody>
+	    		{%if t.paciente %}
+	    			<tr class="error">	 
+	    			<td>{{ t.hora_turno}}</td>	     			
+	    			<td> {{ t.paciente.get_full_name }}</td>
+	    			  			
+	    			<td>{{ t.observacion}}</td>
+	    			{% if user == t.paciente %}	   	    		 		
+	    				<td><a class="btn" href="/turnos/anular/{{ t.id}}"> <li class="icon-remove"> </li> Anular </a> </td>
+	    			{% else %}
+	    				<td> </td>
+	    			{%endif%}
+	    		{%else%}
+	    		  	<tr class="success">	
+	    		  	<td>{{ t.hora_turno}}</td>	
+	    			<td> Disponible</td>	
+	    			    			
+	    			<td>{{ t.observacion}}</td>
+	  
+	  	  			{% if not reserva%}	    				    				    			
+	    			<td><a class="btn" href="/turnos/reserva/{{ t.id}}"> <li class="icon-ok"> </li> Reservar </a> </td>
+	    			{% else %}
+	    				<td> </td>  		    			
+	    			{% endif %}	  
+	    		{% endif %}  			    		    		
+
+	    		</tr>
+	    	</tbody>		    
+		    {%endfor%}
+	    </table>
+	    
+	 {%endfor%}
+	{% else %}
+	    <h3> Haga su Consulta...</h3>
+	{% endif%}
+	<br />
+
+
+
+
+
+			<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a Consultas</a>	
+
+
+
+
+
+
+{% endblock %}
+

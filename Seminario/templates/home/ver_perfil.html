@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+ {% block title %} Perfil de Paciente{% endblock %}
+{% block content %}
+
+	<!--
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+	
+	-->
+	
+
+<!-- Contexto paciente historia_clinica  -->
+ <div class="form-style">
+	<h3> Informacion Basica del Usuario: </h3>
+	<hr />
+    
+<div class="container-fluid">
+	    	
+    	
+	<div class="span7">
+		
+	
+		<table class="table table-hover table-striped table-bordered">
+		<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th> </th>
+				
+				 
+			</tr>
+		</thead>
+		<tbody>
+		
+    		<tr>
+    	   		
+    			<td> Nombre </td>
+    			<td> {{ paciente.get_full_name }}</td>
+    		<tr>    			    						
+    			<td> Documento  </td>																	
+    			<td> {{ paciente.get_profile.tipo }} :  {{ paciente.get_profile.dni}}</td>
+    		</tr>
+    		<tr>
+    			
+    			<td> Sexo</td>
+    			<td>{{ paciente.get_profile.sexo}} </td>
+    		</tr>
+    		<tr>
+    			<td>Telefono</td>
+    			<td>  {{ paciente.get_profile.telefono}} </td>
+    		</tr> 		    				
+    		<tr>    			    		
+    			<td> Direccion</td>
+    			<td>  {{ paciente.get_profile.direccion}} </td>
+    		</tr> 		    				
+    		<tr>    			    		
+    			<td> Fecha de Nacimiento </td>
+    			<td>  {{ paciente.get_profile.fecha_nacimiento}}</td>
+    		</tr>
+    		<tr>    			    		
+    			<td> Correo </td>
+    			<td>  {{ paciente.email}}</td>
+    		</tr>
+    		<tr>    			    		
+    			<td> Fecha de Registro </td>
+    			<td>  {{ paciente.date_joined}}</td>
+    		</tr>
+    		<tr>    			    		
+    			<td> Ultimo Acceso  </td>
+    			<td>  {{ paciente.last_login}} </td>
+    		</tr>
+    	    
+    	
+    		
+    	</tbody>
+    	
+    	
+	   
+	    
+    </table>
+    
+		
+		<p><strong> Grupo :</strong><br />
+		{% for grupo in grupos%}
+			<span class="label label-info"> {{grupo.name}}</span>
+		{%endfor%}
+		
+		<br /><br />
+		
+		{{informacion }}
+
+				
+		
+			
+	</div>
+	
+	
+	<div class="span5">
+		<img src="/media/{{paciente.get_profile.photo}}" class="img-polaroid" width="250px"/>
+	</div>
+   
+
+</div>   
+    </div>
+    
+    
+    		
+		<br />
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+		{%if user.is_staff %}
+		<a href="{% url vista_user_update paciente.id %}" class="btn btn-primary"> <i class="icon-pencil icon-white"></i> Editar</a>
+		{%endif%}
+		<a href="{% url vista_perfil_update paciente.get_profile.dni %}" class="btn btn-primary"> <i class="icon-pencil icon-white"></i> Perfil</a>
+		
+		
+    
+{% endblock %}
+
+
+{% block sidebar1 %}
+
+
+		<li class="active"> <a href="{%url vista_pacientes %}" class="active"><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li><a href="{%url vista_hce paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+	{%if historia_clinica %}
+		
+		{%if consultas%}
+		<li><a href="{%url vista_consultas historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		{%endif%}
+	<li><a href="{%url vista_consulta_agregar historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Nueva Consulta</a></li>
+	{%endif%}
+		<li><a href="{%url vista_afiliacion paciente.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+					
+{% endblock %}
+
+
+
+{% block informacion %}
+	<img src="/media/images/iconos/DatosPaciente.png" width="180px" class="img-rounded"/>
+{% endblock %}
+
+

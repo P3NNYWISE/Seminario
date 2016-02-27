@@ -1,0 +1,659 @@
+{% extends "base.html" %}
+ {% block title %} Historia Clinica del  Paciente{% endblock %}
+{% block content %}
+
+	<!--
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+	
+	-->
+<script>
+	$(function() {
+		$('#myTabs a:first').tab('show');
+	})
+</script>	
+
+
+
+
+<!-- Contexto paciente historia_clinica  -->
+	<h3> Historia Clinica :         </h3>
+ <div class="tabbable tabs-below"> 
+    <ul class="nav nav-tabs" id='myTabs'>
+    	
+    <li class="active"><a href="#tab1" data-toggle="tab">Informacion Basica </a></li>    
+    <li><a href="#tab2" data-toggle="tab"> Antecedentes</a></li>
+    <li><a href="#tab3" data-toggle="tab">Examen Fisico</a></li>
+
+
+    </ul>
+    
+    <div class="tab-content">
+    
+    <div class="tab-pane active " id="tab1">
+    	
+        <!-- TAB 1 HCE -->
+	
+	<div class="span12">
+		{% if historia_clinica %}
+		<div class="form-style">
+		<p><h3> Informacion Basica :         </h3>
+		<hr size="10"/>
+		<div class="row-fluid">
+
+			<div class="span8">
+				<h4> Prestador : <small> {{ historia_clinica.prestador }}</small></h4>
+				<h4> Obra Social  : <small> {{ prescripcion.os_prescripcion.obrasocial }}</small></h4>
+			</div>
+			<div class="span4">
+						 
+
+				<h4> Nro Expediente   :<small>   {{ historia_clinica.id }}</small></h4>
+	 			<h4>  Fecha :<small>  {{ historia_clinica.fecha_creacion }}</small></h4>
+			</div>
+		</div>
+		</p> 
+		
+		
+		<table class="table table-hover table-bordered table-striped">
+		<thead>
+			<tr>
+				<th> Datos Basicos  </th>
+				
+				<th>
+					{%if editable%}
+					<a href="{% url vista_editar_hce historia_clinica.id %}" class="btn btn-primary pull-right"> <i class="icon-pencil icon-white"></i> Editar</a>
+					{%endif%} 
+				</th>
+				
+				 
+			</tr>
+		</thead>
+		<tbody>
+			<tr>					
+    			<td> Nombre  </td>																	
+    			<td>  {{paciente.get_full_name }} </td>
+    		</tr>
+		
+
+    					   
+    		<tr>					
+    			<td> Lugar de Nacimiento  </td>																	
+    			<td> {{ historia_clinica.lugar_nacimiento}} </td>
+    		</tr>
+    		<tr>
+    			
+    			<td> Estado Civil</td>
+    			<td>{{ historia_clinica.estado_civil}}</td>
+    		</tr>
+    		<tr>
+    			
+    			<td>Ocupacion</td>
+    			<td>  {{ historia_clinica.ocupacion}}</td>
+    		</tr> 		    				
+    		<tr>
+    				    		
+    			<td> Religion </td>
+    			<td>  {{ historia_clinica.religion}} </td>
+    		</tr> 		    				
+    		<tr>
+    			<td> Padre </td>
+    			<td>  {{ historia_clinica.padre}}</td>
+    		</tr>
+    		<tr>    			    		
+    			<td> Madre </td>
+    			<td>  {{ historia_clinica.madre}} </td>
+    		</tr>
+    		
+    		<tr>
+    			    			         			    	
+    			<td> Grupo Sanguineo </td>
+    			<td>  {{ historia_clinica.grupo_sanguineo}}</td>
+    	    		
+    		</tr>
+    		<tr>
+    			         			    	
+    			<td> Motivo de Consulta  </td>
+    			<td>  {{ historia_clinica.motivo_consulta}}</td>
+    	    		
+    		</tr>
+    		  
+    		
+    		<tr>
+    			         			    	
+    			<td> Antecedentes Enfermedad Actual </td>
+    			<td> {{ historia_clinica.antecedentes_enfermedad_actual }}</td>
+    	    		
+    		</tr>
+    		      		
+    	    
+    	</tbody>	   
+	    
+    </table>
+    
+    </div>
+    <br />
+		
+		<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar </a>
+		<a href="#" class="btn btn-primary"><i class="icon-book icon-white"></i> Reporte</a>
+		
+		
+		
+    
+	{% else %}
+	<div class="alert alert-error">
+		<p> Historia Clinica no disponible
+			<a href="{% url vista_agregar_hce paciente.id %} " class="btn btn-primary pull-right"> <i class="icon-file icon-white"></i> Cargar </a>
+			</p>
+	</div>
+    
+    	
+
+    	<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+    	
+    {%endif%}	
+	{{informacion }}
+		
+		
+    	
+     
+ 	</div>
+ 	</div>
+   
+    
+    <!-- Tab 2 Historia Clinica -->
+  <div class="tab-pane " id="tab2">
+  {%if historia_clinica %}	
+  	
+  		{% if fisiologicos %}
+  		<div class="form-style">
+  	
+  		<h3>  Antecedentes Fisiologicos : <small> Fecha Creacion :  {{ fisiologicos.fecha }}</small> </h3>
+		<table class="table table-hover table-bordered table-striped">
+			<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th> 
+					{%if editable%}
+					<a href="/historia-clinica/antecedentes/fisiologicos/editar/{{ fisiologicos.id}}" class="btn btn-primary pull-right" title="Editar"> <i class="icon-pencil icon-white"></i></a>
+					{%endif%}	
+					</th>
+				
+				 
+			</tr>
+			</thead>
+			<tbody>
+	
+    		<tr>
+    			<td> Alimentacion   </td>
+    			<td>  {{ fisiologicos.alimentacion }} </td>
+    		</tr>
+    		<tr>
+    			<td> Dipsia    </td>
+    			<td>  {{ fisiologicos.dipsia  }} </td>
+    		</tr>
+    		<tr>
+    			<td> Diuresis    </td>
+    			<td>  {{ fisiologicos.diuresis  }} </td>
+    		</tr>
+    		<tr>
+    			<td> Catarsis    </td>
+    			<td>  {{ fisiologicos.catarsis  }} </td>
+    		</tr>
+    		<tr>
+    			<td> Sommia    </td>
+    			<td>  {{ fisiologicos.sommia  }} </td>
+    		</tr>
+    		<tr>
+    			<td> Observaciones     </td>
+    			<td>  {{ fisiologicos.observaciones   }} </td>
+    		</tr>
+		
+			
+			
+		</tbody>
+		
+	</table>
+	  	
+	</div>
+	
+  		{%else%}
+		  	<div class="alert alert-error">
+				<p> Antecedentes Fisiologicos no disponible
+						<a href="/historia-clinica/antecedentes/fisiologicos/agregar/{{ historia_clinica.id }} " class="btn btn-primary pull-right" title="balbab" ><i class="icon-file icon-white icon-large"></i> Cargar </a>
+				</p>		
+			</div>
+        		
+    
+
+  	
+  		{%endif%}
+  		
+  		{% if patologicos %}
+  		<div class="form-style">
+  	
+  		<h3>  Antecedentes Patologicos : <small> Fecha Creacion :  {{ patologicos.fecha }}</small> </h3>
+		<table class="table table-hover table-bordered table-striped">
+			<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th>
+					{%if editable%} 
+					<a href="/historia-clinica/antecedentes/patologicos/editar/{{ patologicos.id}}" class="btn btn-primary pull-right" title="Editar"> <i class="icon-pencil icon-white"></i></a>
+					{%endif%}	
+					</th>
+				
+				 
+			</tr>
+			</thead>
+			<tbody>
+		
+    		<tr>
+    			<td> Infancia   </td>
+    			<td>  {{ patologicos.infancia }} </td>
+    		</tr>
+    		<tr>
+    			<td> Adulto    </td>
+    			<td>  {{ patologicos.adulto  }} </td>
+    		</tr>
+    		<tr>
+    			<td> DBT    </td>
+    			<td>  {{ patologicos.DBT }} </td>
+    		</tr>
+    		<tr>
+    			<td> HTA   </td>
+    			<td>  {{ patologicos.HTA  }} </td>
+    		</tr>
+    		<tr>
+    			<td> TBC   </td>
+    			<td>  {{ patologicos.TBC }} </td>
+    		</tr>
+    		<tr>
+    			<td> Gemelar     </td>
+    			<td>  {{ patologicos.gemelar   }} </td>
+    		</tr>
+    		<tr>
+    			<td> Otras     </td>
+    			<td>  {{ patologicos.otras   }} </td>
+    		</tr>
+    		<tr>
+    			<td> Especificacion     </td>
+    			<td>  {{ patologicos.especificacion   }} </td>
+    		</tr>
+    		<tr>
+    			<td> Quirurgicos     </td>
+    			<td>  {{ patologicos.quirurgicos }} </td>
+    		</tr>
+    			<tr>
+    			<td> Catarsis </td>
+    			<td>  {{ patologicos.catarsis }} </td>
+    		</tr>
+    		
+    			<tr>
+    			<td> Traumatologicos </td>
+    			<td>  {{ patologicos.traumatologicos }} </td>
+    		</tr>
+			<tr>
+    			<td> Alergicos </td>
+    			<td>  {{ patologicos.alergicos }} </td>
+    		</tr>
+    		
+		
+			
+			
+		</tbody>
+		
+	</table>
+       </div>
+    	
+	
+	
+  		{%else%}
+		  	<div class="alert alert-error">
+				<p> Antecedentes Patologicos no disponible
+						<a href="/historia-clinica/antecedentes/patologicos/agregar/{{ historia_clinica.id }} " class="btn btn-primary pull-right" title="balbab" ><i class="icon-file icon-white icon-large"></i> Cargar </a>
+				</p>		
+			</div>
+        		
+    
+
+  	
+  		{%endif%}
+  		
+  		
+  	
+  	
+  	
+  	{% if habitos_toxicos %}
+  	<div class="form-style">
+  	<h3>  Habitos Toxicos :  <small> Fecha Creacion :  {{ habitos_toxicos.fecha }}</small>  </h3>	 
+  		<table class="table table-hover table-bordered table-striped">
+		<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th>
+					{%if editable%}
+					 <a href="/historia-clinica/antecedentes/habitos-toxicos/editar/{{ habitos_toxicos.id}}" class="btn btn-primary pull-right" title="Editar"> <i class="icon-pencil icon-white"></i></a>
+					{%endif%}
+				</th>
+				
+				 
+			</tr>
+		</thead>
+		<tbody>
+
+    		<tr>
+    	       		 
+    			<td> Alcohol   </td>
+    			<td>  {{ habitos_toxicos.get_alcohol}} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td>Tabaco    </td>
+    			<td> {{  habitos_toxicos.get_tabaco }} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Drogas     </td>
+    			<td> {{ habitos_toxicos.get_drogas }} </td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Infusiones    </td>
+    			<td> {{ habitos_toxicos.get_infuciones }}</td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Observaciones  : </td>
+    			<td> {{ habitos_toxicos.observaciones}}</td>
+    		</tr>
+  	</tbody>	   
+	    
+    </table>
+    </div>
+    	<br>
+		{{informacion }}
+		
+		<br />
+		
+		
+		
+		
+ 	
+    	
+    {% else %}
+    	
+    		<div class="alert alert-error">
+				<p> Habitos Toxicos no disponible
+					<a href="/historia-clinica/antecedentes/habitos-toxicos/agregar/{{ historia_clinica.id }} " class="btn btn-primary pull-right"> <i class="icon-file icon-white icon-large"></i> Cargar </a>
+					</p>
+			</div>
+        		
+    {%endif%}		
+   
+    	
+  	{% if perinatales %}
+  	<div class="form-style">
+  	
+  	<h3>  Antecedentes Perinatales  <small> Fecha Creacion :  {{ perinatales.fecha }}</small> </h3>	 
+  		<table class="table table-hover table-bordered table-striped">
+		<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th> 
+				{%if editable%}
+					<a href="/historia-clinica/antecedentes/perinatales/editar/{{ perinatales.id}}" class="btn btn-primary pull-right" title="Editar"> <i class="icon-pencil icon-white"></i></a>
+				{%endif%}
+				</th>
+				
+				 
+			</tr>
+		</thead>
+		<tbody>
+    	
+    		<tr>
+    	       		 
+    			<td> Embarazo Nro   </td>
+    			<td>  {{ perinatales.embarazo_nro}} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Duracion Embarazo  </td>
+    			<td> {{  perinatales.duracion_embarazo }} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Controles     </td>
+    			<td> {{ perinatales.controles }} </td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Parto Normal   </td>
+    			<td> {{ perinatales.parto_normal }}</td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Peso  : </td>
+    			<td> {{ perinatales.peso}}</td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Talla   : </td>
+    			<td> {{ perinatales.talla }}</td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Requirio Atencion Medica   : </td>
+    			<td> {{ perinatales.atencion_medica }}</td>
+    		</tr>
+    			<tr>
+    	       		 
+    			<td> Otros Datos : </td>
+    			<td> {{ perinatales.otros_datos }}</td>
+    		</tr>
+  	</tbody>	   
+	    
+    </table>
+    </div>
+    	<br>
+		{{informacion }}
+		
+		<br />		
+		
+ 	
+    	
+    	{% else %}
+    	
+    		<div class="alert alert-error">
+				<p> Antecdentes Perinatales no disponible
+					<a href="/historia-clinica/antecedentes/perinatales/agregar/{{ historia_clinica.id }} " class="btn btn-primary pull-right"> <i class="icon-file icon-white icon-large"></i> Cargar </a>
+					</p>
+			</div>
+        		
+    	{%endif%}		
+   
+    	
+	{%else%}
+    		<div class="alert alert-error">
+				<p> Antecedentes no disponible,Cargue Historia Clinica del Paciente
+					<a href="{% url vista_agregar_hce paciente.id %} " class="btn btn-primary pull-right"> <i class="icon-file icon-white"></i> Cargar </a>
+					</p>
+			</div>
+			<a href="{%url vista_hce historia_clinica.id %} " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+    	
+   
+    {%endif%}
+    <a href="{%url vista_hce paciente.id%} " class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar a la lista</a>
+       	
+    	</div>   			
+     
+    <div class="tab-pane" id="tab3">    	
+    		{% if examen_fisico %}
+    		<div class="form-style">
+    		<h3>  Exploracion Fisica <small> Fecha Creacion :  {{ examen_fisico.fecha_examen }}</small> </h3>
+    			<hr size="10"/>
+    		<table class="table table-hover table-bordered table-striped">
+			<thead>
+			<tr>
+				<th> Descripcion  </th>
+				
+				<th>{%if editable%}
+						<a href="/historia-clinica/examen-fisico/editar/{{ examen_fisico.id }}" class="btn btn-primary pull-right" title="Editar"> <i class="icon-pencil icon-white"></i></a>
+					 {%endif%}
+				</th>
+				
+				 
+			</tr>
+			</thead>
+			<tbody>
+	
+    		<tr>
+    	       		 
+    			<td> Impresion General </td>
+    			<td> {{ examen_fisico.impresion_general}} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Presion Arterial Sistolica </td>
+    			<td> {{  examen_fisico.pres_art_sist }} </td>
+    		</tr>
+    		<tr>
+    			<td> Presion Arterial Diastolica </td>
+    			<td> {{  examen_fisico.pres_art_diast }} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Frecuencia Respiratoria </td>
+    			<td> {{ examen_fisico.frec_respiratoria}} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Peso </td>
+    			<td> {{ examen_fisico.peso}}</td>
+    		</tr>
+    		<tr>
+    			<td> Peso Medio </td>
+    			<td> {{ examen_fisico.peso_medio}} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Indice de Masa Corporal</td>
+    			<td> {{ examen_fisico.bmi }} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Altura</td>
+    			<td> {{ examen_fisico.altura }}</td>
+    		</tr>
+    		<tr>
+    			<td> Altura media </td>
+    			<td> {{ examen_fisico.altura_media }} </td>
+    		</tr>
+    		<tr>
+    	       		 
+    			<td> Talla</td>
+    			<td> {{ examen_fisico.talla}}</td>
+    		</tr>
+    		
+    		
+    		
+    		<tr>
+    			<td> Temperatura Corporal </td>
+    			<td> {{ examen_fisico.temp_corporal}} </td>
+    		</tr>
+    		
+    		
+				   
+		</tbody>
+		</table>
+		</div>
+		
+		{{informacion }}
+    
+    	<br />
+    	
+    	<a href="javascript:window.history.go(-1) " class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar a la lista</a>
+	
+		
+		
+  		     		   	
+    		
+    		
+    {% else %}
+    	{%if historia_clinica %}
+    		<div class="alert alert-error">
+				<p> Examen Fisico  no disponible
+					<a href="/historia-clinica/examen-fisico/agregar/{{ historia_clinica.id }}" class="btn btn-primary pull-right"><i class="icon-file icon-white icon-large "></i> Cargar</a>
+					</p>
+					
+			</div>
+        		
+    		
+    	{%else%}
+    	
+    		<div class="alert alert-error">
+				<p>Examen no disponible,Cargue Historia Clinica del Paciente
+					<a href="{% url vista_agregar_hce paciente.id %} " class="btn btn-primary pull-right"> <i class="icon-file icon-white"></i> Cargar </a>
+					</p>
+			</div>
+			<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar a la lista</a>
+    	
+    	
+    		
+    	{%endif%}	
+    	<a href="{%url vista_hce paciente.id%} " class="btn btn-primary"> <i class="icon-chevron-left icon-white"></i>Regresar a la lista</a>
+    	
+    	
+    	
+    {%endif%}
+    
+		
+    	
+    </div>	
+    	
+    	
+    
+    	    	 
+    	
+
+    
+    	
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block informacion %}
+
+					<h5>{{paciente.get_full_name }}</h5>
+					<h5> Expediente Nro: {{ historia_clinica.id }} </h5>
+					<a href="/perfil/{{paciente.id}}" title="Perfil"><img src="/media/{{paciente.get_profile.photo}}" class="img-polaroid" width="250px"/></a>
+					
+					
+					
+{% endblock %}
+{% block sidebar1 %}
+
+
+	   <li><a href="{%url vista_pacientes %}" ><i class="icon-chevron-right"></i> Pacientes</a></li>
+		<li class="active"><a href="{%url vista_hce paciente.id%}"><i class="icon-chevron-right"></i> Historia Clinica</a></li>
+		<li ><a href="{%url vista_afiliacion paciente.id%}"><i class="icon-chevron-right"></i> Afiliacion</a></li>
+	{%if historia_clinica %}
+		
+		<li><a href="{%url vista_consultas historia_clinica.id%}" class="active"><i class="icon-chevron-right"></i> Consultas</a></li>
+	
+		
+		
+		
+		<li ><a href="{%url vista_practicas historia_clinica.id%}"><i class="icon-chevron-right"></i> Practicas</a></li>
+		<li ><a href="{%url vista_recetas historia_clinica.id%}"><i class="icon-chevron-right"></i> Recetas</a></li>
+	{%endif%}
+					
+{% endblock %}
+
+
+

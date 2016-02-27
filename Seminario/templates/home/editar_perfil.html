@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %} Editar Perfil{% endblock %}
+{% block content %}
+
+		  <!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+		<!-- <link rel="stylesheet" href="/media/bootstrap/css/bootstrap.css" /> -->
+
+
+<script type="text/javascript">
+	$(function(){
+		$.datepicker.setDefaults($.datepicker.regional["es"])
+		$( "#datepicker" ).datepicker({
+			dateFormat: "yy-mm-dd",
+			changeYear : true,
+		  	yearRange : "1960:2015",
+	
+		  	numberOfMonths: 1,
+		  	//firstDay: 1,  	
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],	
+		  	
+		  	
+		  	
+		  	showOn: "button",
+			buttonImage: "/media/images/calendar.gif",
+			buttonImageOnly: true,
+			
+		  	
+
+
+		  }  
+		);
+	});
+</script>
+
+
+<!-- changeMonth : true,
+		  changeYear : true,
+		  yearRange : "1900:2015",
+		 -->
+{{ form.media}}
+{% if informacion == 'guardado' %}
+<div class="alert alert-success">
+	Se Guardo Satisfactoriamente
+</div>
+
+{%endif%}
+{% if informacion == 'error' %}
+<div class="alert alert-error">
+	Se ha producido un error, DNI
+</div>
+
+{%endif%}	
+
+
+	
+<div class="row">
+	
+	<div class="span8">
+
+		<form action="." method="POST" enctype="multipart/form-data">
+					<h2> Editar Perfil</h2>	 
+			{% csrf_token %}
+				<table class="table table-hover" >
+				{{ form.as_table}}
+				</table>
+			
+			<br />
+			<br />
+			<p><input class="btn btn-primary" type="submit"  value="Guardar"/></p>	
+			
+		</form>
+	
+		<br>
+		{{informacion}}
+		<br />
+	
+	</div>
+	<div class="span4" align="center">
+		
+		<img src="/media/{{ user.get_profile.photo}}" class="img-polaroid"/>
+		
+		
+	</div>
+							
+
+		
+</div>
+
+{% endblock %}
+{% block informacion %}
+	<img src="/media/images/iconos/Form.png" width="180px" class="img-rounded"/>
+{% endblock %}

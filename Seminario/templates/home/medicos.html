@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title%} Profesionales {% endblock %}
+
+{% block content %}
+<h2> Profesional : <small>{{ medico.user.get_full_name }}</small>  </h2>
+<hr />
+{% if medico %}
+<h3>Datos Basicos</h3>
+	<table class="table table-hover  table-striped table-bordered">
+		<thead>
+			<tr>
+				<th> Descripcion  </th>
+				<th> </th>
+			</tr>
+		</thead>																																																																													    	
+    	<tbody>
+    		<tr>
+    			<td> Matricula</td>
+    			<td>{{ medico.matricula }}</td>
+    		</tr>    		    		   
+    		<tr>    			
+    			<td> Cuit</td>
+    			<td> {{ medico.cuit }}</td>
+    		    		    	    		    		
+    	</tbody>    	    		 	    
+    </table>
+    
+    {% if especialidades %}
+    <hr />    
+    <h3>Especialidades</h3>
+    <table class="table table-hover  table-striped table-bordered ">
+		<thead>
+			<tr>
+				<th> Especialidad  </th>
+				<th>  Fecha Habilitacion</th>
+				<th>  Fecha Caducacion</th>
+				<th>  Estado </th>
+				<th>   </th>
+			</tr>
+		</thead>
+			<tbody>
+			{% for especialidad in especialidades%}
+    		<tr>
+    			<td>  {{ especialidad.especialidad.nombre }}</td>
+    			<td>{{ especialidad.fecha_habilitacion }}</td>
+    			<td>{{ especialidad.fecha_caducacion }}</td>
+    			
+    			{%if  especialidad.estado %}
+    			<td> Activo </td>
+    			{% else %}
+    			<td> No Activo </td>
+    			
+    			{%endif%}
+    			<td>
+    				{%if user.is_authenticated and user.is_staff %}  
+    				<a class="btn btn-mini btn-info" href="{%url vista_especialidades_medico_update especialidad.id %}" title="Editar"><li class="icon-pencil icon-white"></li>  </a>
+    				{%endif%}
+    			  <a class="btn btn-mini btn-info" href="{%url vista_agenda especialidad.id %}" title="Agenda"><li class="icon-book icon-white"></li>  </a>
+    			  
+    			  <a class="btn btn-mini btn-info" href="{%url vista_turnos_consulta especialidad.id %}" title="Consultar Planillas Turnos"><li class="icon-calendar icon-white"></li>  </a></td>
+    			  </td>
+    			  
+    			
+    			
+    		</tr>    		    		   
+    		{% endfor %}    		    		    			    		
+    	</tbody>    	    		 	    
+    </table>	
+     
+    {% endif%}
+    
+    
+        			<!-- Botonies con iconos-->    				    		
+    			{%if user.is_authenticated and user.is_staff %}       						    			    	
+    			<div class="pull-right">
+    		    	<a class="btn btn-mini btn-info" href="{%url vista_medicos_update medico.matricula %}" title="Editar"><li class="icon-pencil icon-white" ></li>  </a>
+    		    	<a href="#myModal" role="button" class="btn btn-mini btn-danger" data-toggle="modal" title="Eliminar"> <li class="icon-trash icon-white"></li></a>
+    		    	<a class="btn btn-mini btn-success" href="{% url vista_medicos_agregar  %}" title="Agregar" > <i class="icon-plus icon-white"></i>  </a> 		
+        								
+    		    </div>			
+    		
+    			{% endif%} 
+    			<a href="{%url vista_medicos%}" class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+    			{%if user.is_authenticated and user.is_staff %}
+    			<a class="btn btn-primary" href="{% url vista_especialidades_medico_agregar  medico.matricula %}" title="Agregar" > <i class="icon-plus icon-white"></i> Especialidad </a>
+    			
+    			{%endif%}
+				
+    
+    
+{% else %}
+    <h2> No se han cargado Profesionales...</h2>
+    <a href="javascript:window.history.go(-1) " class="btn btn-primary"> Regresar a la lista</a>
+{% endif%}
+
+<br /> 
+
+
+
+<!-- Modal -->
+<div  id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Confirmacion </h3>
+	</div>
+	<div class="modal-body">
+		<p>Desea eliminar  la Matricula N°<b> {{ medico.matricula }} </b> </p>
+	</div>
+	<div class="modal-footer">
+		<form action="{% url vista_medicos_delete medico.matricula %}" method="POST">
+		{% csrf_token %}
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-danger" type="submit" value="Eliminar" />
+	</form>
+
+	</div>
+</div>
+<!-- Fin Modal -->
+
+{% endblock %}
+
+{% block informacion %}
+
+					
+					<a href="/perfil/ {{medico.user.id}}"><img class="img-polaroid" src="/media/{{ medico.user.get_profile.photo}}" width="250px"/></a>
+					<h4>{{ medico.user.get_full_name }}</h4>
+					<h5> Matricula : <small> {{ medico.matricula }}</small></h5>
+					
+{% endblock %}
+{% block sidebar1 %}
+
+
+
+
+	<li class="active"><a href="{%url vista_medicos %}"><i class="icon-chevron-right"></i> Profesionales</a></li>
+	{%if user.is_authenticated and user.is_staff %}
+
+
+	{%if user.is_authenticated and user.is_staff %}
+		<li><a href="{%url vista_especialidades %}"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	
+	{%else%}
+		<li ><a href="/turnos/listado_especialidades/page/1"><i class="icon-chevron-right"></i> Especialidades</a></li>
+	{%endif%}
+
+					
+					
+	{%endif%}
+{% endblock %}

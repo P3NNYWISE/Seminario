@@ -1,0 +1,349 @@
+{% extends "base-calendar3.html" %}
+{% block title%} Planilla Turnos {% endblock %}
+
+{% block content %}
+<!-- Contexto  Turnos-->
+
+		<meta charset="utf-8" />
+		<!-- <script src="/media/js/jquery.js"></script>--> 
+		 
+		 <link rel="stylesheet" href="/media/css/jquery-ui.css" />
+		 <link rel="stylesheet" href="/media/fullcalendar/cupertino/theme.css" />
+		<script src="/media/js/jquery-ui.js"></script>
+		<link rel="stylesheet" href="/media/fullcalendar/fullcalendar.css" />		
+		<script src="/media/fullcalendar/fullcalendar.js"></script>
+		
+		
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		//Calendario
+		
+		var calendar = $('#calendar').fullCalendar({
+			theme: true,
+			height : 650 ,
+			lazyFetching : false,
+			aspectRatio : 0.5 ,
+			//weekends : false,
+			hiddenDays : [0],
+			//slotMinutes: parseInt("{{duracion}}",10 ),
+			slotMinutes: 15, 
+			columnFormat: {
+				month: 'ddd',
+				week:'ddd d/M',
+				day:'dddd d/M',
+			},
+			buttonText: {
+				today: 'Hoy',
+				month : 'Mes',
+				week: 'Semana',
+				day: 'Dia',
+
+				
+			},
+			dayNames:['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'],
+			dayNamesShort:['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+			firstHour : 8 ,
+			minTime : 6,
+			maxTime : 22,
+			header :{
+				left : 'prev,next today' ,
+				center : 'titulo',
+				right : 'agendaWeek ,agendaDay',
+			},
+			defaultView: 'agendaDay',
+			
+			//selectable : true,
+			selectHelper : false,
+			
+			select : function(start,end,allDay){
+				var titulo =  prompt('Evento');
+				if (titulo){
+					calendar.fullCalendar('renderEvent',
+					{
+						title: titulo,
+						start : start ,
+						end: end,
+						allDay :allDay,
+					},
+					true
+					);	
+				}//if
+				calendar$.fullCalendar('unselect');
+			},//select
+			editable:false,
+			
+			eventSources : [{
+				url: "/turnos/calendario/{{prestador.id}}/",
+				
+				//textColor: 'black',
+				
+			}],
+			
+			eventClick : turnoClick,
+			
+						
+		});		//fin Calendario
+		function turnoClick(calEvent , jsEvent , view) {
+				//funcion activa al hacer click sobre un evento turno
+				
+				if(calEvent.title == ""){
+					//$('#modal_name').text('Reservar : ' + calEvent.start);
+					
+					$('#myModalLabel').text('Desea Reservar el Turno ');
+					$('#modal_fecha').text($.fullCalendar.formatDate(calEvent.start, 'dd-MM-yyyy'));
+					$('#modal_hora').text( $.fullCalendar.formatDate(calEvent.start, 'HH:mm:ss'));
+					$('#myModalSubmit').val('Reservar');
+					$('#myModalTurnos').modal('toggle');
+					$('#myModalSubmit').click(function(e){
+						e.preventDefault();
+						
+						$.ajax({
+						
+						url:'/turnos/reserva/' + calEvent.id ,
+						type: 'GET',
+						dateType : 'json',
+						success: function(data){
+							console.log(data);
+							//calendar.fullCalendar('refetchEvents');
+							if (data['title'] != ""){
+								calEvent.title=data['title'];
+								calEvent.backgroundColor = 'red'; //Cambio de color
+
+								$('#calendar').fullCalendar('updateEvent',calEvent);
+							
+								
+							}
+							else {
+								alert('No puede reservar en el mismo dia');
+							}
+								calEvent= '';
+							}//success
+						
+						});				//ajax
+						$('#myModalTurnos').modal('hide');
+						
+					});//click
+					
+					
+					
+					
+				}  //if
+				else {
+					if (calEvent.title == "{{ user.get_full_name}}") {
+						
+					
+					
+					$('#myModalLabel').text('Desea Anular el Turno ');
+					$('#modal_fecha').text($.fullCalendar.formatDate(calEvent.start, 'dd-MM-yyyy'));
+					$('#modal_hora').text( $.fullCalendar.formatDate(calEvent.start, 'HH:mm:ss'));
+					$('#myModalSubmit').val('Anular');
+					$('#myModalTurnos').modal('toggle');
+					$('#myModalSubmit').click(function(e){
+						e.preventDefault();
+						
+						$.ajax({
+						
+						url:'/turnos/anular/' + calEvent.id ,
+						type: 'GET',
+						dateType : 'json',
+						success: function(data){
+							console.log(data);
+							//calendar.fullCalendar('refetchEvents');
+							calEvent.title= data['title'];
+							calEvent.backgroundColor = ''; //Cambio de color
+							
+							$('#calendar').fullCalendar('updateEvent',calEvent);
+							calEvent= '';
+							}//success
+						
+						});				//ajax
+						$('#myModalTurnos').modal('hide');
+						
+					});//click
+					}
+					
+					
+				}//else
+
+					
+								//alert('Event : '+ calEvent.id + calEvent.title);
+				
+				$(this).css('background-color','red');
+								
+				return false;
+				
+				//$('#calendar').fullCalendar('refetchEvents');
+			}//eventclick
+	// ir al dia de hoy
+	calendar.fullCalendar('gotoDate',"{{dia_atencion.fecha.year}}",(parseInt("{{dia_atencion.fecha.month}}",10)-1),"{{dia_atencion.fecha.day}}");
+	
+	
+	var i = 0;
+		var diasActivos=[]
+		"{%for d in  dia_atenciones%}"
+			diasActivos[i] = "{{ d.fecha.year}}"+"-"+"{{ d.fecha.month}}"+"-"+"{{ d.fecha.day}}";
+			//alert(diasActivos[i]);
+			i++;
+		"{%endfor%}"
+		
+		
+		$( "#TurnosDatepicker" ).datepicker({
+			
+			dateFormat: "DD yy-mm-dd",
+		  	numberOfMonths: 1,
+		  	firstDay: 0,
+		  	minDate: new Date,
+		  	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+							'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		  	dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+			dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+			dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie;', 'Jue', 'Vie', 'Sab'],		  
+			beforeShowDay : function(date){
+				var dia =  date.getDate();
+				var mes = date.getMonth()+1;
+				var anio= date.getFullYear();
+				var fecha= anio+"-"+mes+"-"+dia;
+				
+				
+				if ( $.inArray(fecha,diasActivos) != -1){ return [true , ""]}
+				else { return [false ,""]}
+				
+				
+			},
+			
+			
+			onSelect : function(date){
+				$('#datepicker').val(date);
+				$('#consultaForm').submit();
+				
+			},
+		  }  
+		  
+		);
+	
+	
+	
+	
+	});//document
+
+	
+	
+</script>
+<style>
+	.ui-datepicker ,.ui-state-default , .ui-state-active , .ui-state-hover
+	{
+		font-size: 90%;
+		
+		
+	}
+</style>
+
+
+<ul class="breadcrumb">
+	
+	<li><a href="/turnos/listado_especialidades/page/1">Especialidades </a>  <span class="divider">/</span> </li>
+	<li> <a href="/turnos/listado/{{ prestador.especialidad.id }}/page/1">{{prestador.especialidad}}</a><span class="divider">/</span></li>
+	<li ><a href="javascript:window.history.go(-1) ">{{prestador.medico}} : Dias de Atencion </a><span class="divider">/</span></li> 
+	
+	<li class="active"> Turno</li>
+			
+	
+</ul>
+
+
+<form id="consultaForm" class="well form-search" action="." method="POST" enctype="multipart/form-data" style="display: none">
+	
+	<div class="input-prepend">	
+		<button type="submit" class="btn"> <i class="icon-search"></i></button>			
+		<input type="text" class="input-medium  search-query" placeholder="Fecha" name="fecha"  id="datepicker"/>
+		
+		
+		{% csrf_token %}
+		
+	</div>
+</form>
+
+<h3> Profesional : {{ prestador }}  </h3>
+<h4> Turnos del dia :   {{ dia_atencion.fecha }}  </h4>
+
+{%if dia_atencion%}
+<div id="calendar"></div>
+{%else%}
+	<div class="alert alert-error">
+    		No se han cargado dias de atencion para este Profesional
+    	</div>
+
+
+{%endif%}
+
+
+
+
+<!-- Modal -->
+<div  id="myModalTurnos" class="modal hide fade" >
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">  </h3>
+	</div>
+	<div class="modal-body">
+		
+		<p>Profesional : {{prestador }}</p>
+		<p>Fecha : <span id="modal_fecha"></span> </p>
+		<p>Hora :     <span id="modal_hora"></span> </p>
+	</div>
+	<div class="modal-footer">
+		 
+		
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+		<input class="btn btn-primary " id ='myModalSubmit' type="submit" value="Reservar" />
+
+	</div>
+</div>
+
+
+
+
+
+
+
+<a href="javascript:window.history.go(-1) " class="btn btn-primary"><i class="icon-chevron-left icon-white"></i> Regresar</a>
+
+<div class="pull-right">
+{% if user.is_authenticated %}
+	<a class="btn btn-primary" href="{%url vista_turnos_reservas %}"> <i class="icon-white icon-chevron-right"></i> Continuar</a><br />
+{% endif %}
+
+</div>
+
+
+{% endblock %}
+
+{% block informacion %}
+					<a href="/perfil/ {{prestador.medico.user.id}}"><img src="/media/{{ prestador.medico.user.get_profile.photo}}" width="250px" class="img-polaroid"/></a>
+					
+					<h4>{{ prestador.medico.user.get_full_name }}</h4>
+					<h5> Matricula : <small>{{ prestador.medico.matricula }}</small></h5>
+			
+					
+					
+					
+{% endblock %}
+{% block sidebar1 %}
+	
+	<li class="active"><a href="/turnos/listado_especialidades/page/1"> <i class="icon-chevron-right"></i> Solicitar Turnos</a></li>
+	
+	<li ><a href="{% url vista_turnos_reservas %} "><i class="icon-chevron-right"></i> Consultar Turnos</a></li>
+	
+
+	
+					
+					
+{% endblock %}
+	{% block calendar %}
+			<div align="center" id ="TurnosDatepicker"  ></div>
+	{% endblock %}
+					 
