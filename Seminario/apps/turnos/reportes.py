@@ -1,5 +1,5 @@
 
-import ho.pisa as pisa
+#import ho.pisa as pisa
 import cStringIO as StringIO
 import cgi
 from django.template import RequestContext
