@@ -6,7 +6,7 @@ mysql:
  port: 3306
 # socket: /tmp/mysql.sock
  username: root
- password: root
+ password: 
  database: SeminarioDB
  compress: false
 destination:
@@ -16,7 +16,7 @@ destination:
   hostname: 127.0.0.1
   port: 5432
   username: django 
-  password: django
+  password: 
   database: seminariodb
 
 # if tables is given, only the listed tables will be converted.  leave empty to convert all tables.
